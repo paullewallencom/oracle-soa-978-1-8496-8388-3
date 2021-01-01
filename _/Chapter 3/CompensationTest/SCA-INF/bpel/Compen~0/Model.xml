@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="CompensationBPELProcess" targetNamespace="http://xmlns.oracle.com/SOACookbookTransaction/CompensationTest/CompensationBPELProcess" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/SOACookbookTransaction/CompensationTest/CompensationBPELProcess" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/file/SOACookbookTransaction/CompensationTest/FileWriteService" xmlns:blog="http://www.oracle.com/XSL/Transform/java/antony.blog.XPathImpl" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue" xmlns:ns2="http://TargetNamespace.com/FileWriteService" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:stat="http://www.oracle.com/XSL/Transform/java/soa.cookbook.xpath.StdDev" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" id="BpPrc0">
+  <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="compensationbpelprocess_client" partnerLinkType="client:CompensationBPELProcess" myRole="CompensationBPELProcessProvider"/>
+    <partnerLink name="FileWriteService" partnerLinkType="ns1:Write_plt" partnerRole="Write_role"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:CompensationBPELProcessRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:CompensationBPELProcessResponseMessage"/>
+    <variable name="Invoke_InputVariable" messageType="ns1:Write_msg"/>
+    <variable messageType="client:CompensationBPELProcessFaultMessage" name="FaultVar"/>
+    <variable messageType="client:CompensationBPELProcessFaultMessage" name="HanlderFaultVar"/>
+  </variables>
+  <faultHandlers id="BpFhs0">
+    <catch faultName="client:BusinessFault" faultVariable="HanlderFaultVar" id="BpCFt0">
+      <sequence name="Sequence1" id="BpSeq0">
+        <compensate name="Compensate" id="BpCom0"/>
+        <reply name="ReplyFault" faultName="client:BusinessFault" variable="HanlderFaultVar" partnerLink="compensationbpelprocess_client" portType="client:CompensationBPELProcess" operation="process" id="BpRpl0"/>
+      </sequence>
+    </catch>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq1">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in CompensationBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="compensationbpelprocess_client" portType="client:CompensationBPELProcess" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+    <!-- Generate reply to synchronous request -->
+    <scope name="Tx1Scope" variableAccessSerializable="no" id="BpScp0">
+      <compensationHandler id="BpCoH0">
+        <sequence name="Tx1RollbackSequence" id="BpSeq2">
+          <assign name="AssignTx1" id="BpAss0">
+            <copy>
+              <from expression="xp20:current-dateTime()"/>
+              <to variable="Invoke_InputVariable" part="body" query="/ns2:TransactionActivities/ns2:Activity/ns2:Date"/>
+            </copy>
+            <copy>
+              <from expression="&quot;Reverse Tx1&quot;"/>
+              <to variable="Invoke_InputVariable" part="body" query="/ns2:TransactionActivities/ns2:Activity/ns2:Message"/>
+            </copy>
+          </assign>
+          <invoke name="ReverseTx1" inputVariable="Invoke_InputVariable" partnerLink="FileWriteService" portType="ns1:Write_ptt" operation="Write" bpelx:invokeAsDetail="no" id="BpInv0"/>
+        </sequence>
+      </compensationHandler>
+      <sequence name="Tx1Sequence" id="BpSeq3">
+        <assign name="AssignTx1" id="BpAss1">
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="Invoke_InputVariable" part="body" query="/ns2:TransactionActivities/ns2:Activity/ns2:Date"/>
+          </copy>
+          <copy>
+            <from expression="&quot;Invoke Tx1&quot;"/>
+            <to variable="Invoke_InputVariable" part="body" query="/ns2:TransactionActivities/ns2:Activity/ns2:Message"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeTx1" inputVariable="Invoke_InputVariable" partnerLink="FileWriteService" portType="ns1:Write_ptt" operation="Write" bpelx:invokeAsDetail="no" id="BpInv1"/>
+        <switch name="Switch1a" id="BpSwt0">
+          <case condition="bpws:getVariableData('inputVariable','payload','/client:process/client:failStep') = '1a'">
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">ThrowError</bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <sequence name="FaultSequence1a" id="BpSeq4">
+              <assign name="AssignFault" id="BpAss2">
+                <copy>
+                  <from expression="&quot;Failed after Invoke 1 still in scope 1&quot;"/>
+                  <to variable="FaultVar" part="fault" query="/client:businessFault"/>
+                </copy>
+              </assign>
+              <throw name="ThrowBusinessFault" faultName="client:BusinessFault" faultVariable="FaultVar" id="BpThw0"/>
+            </sequence>
+          </case>
+          <otherwise>
+            <empty name="DoNothing" id="BpEmp0"/>
+          </otherwise>
+        </switch>
+      </sequence>
+    </scope>
+    <switch name="Switch1" id="BpSwt1">
+      <case condition="bpws:getVariableData('inputVariable','payload','/client:process/client:failStep') = '1'">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">ThrowError</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <sequence name="FaultSequence1" id="BpSeq5">
+          <assign name="AssignFault" id="BpAss3">
+            <copy>
+              <from expression="&quot;Failed after Invoke 1&quot;"/>
+              <to variable="FaultVar" part="fault" query="/client:businessFault"/>
+            </copy>
+          </assign>
+          <throw name="ThrowBusinessFault" faultName="client:BusinessFault" faultVariable="FaultVar" id="BpThw1"/>
+        </sequence>
+      </case>
+      <otherwise>
+        <empty name="DoNothing" id="BpEmp1"/>
+      </otherwise>
+    </switch>
+    <scope name="Tx2Scope" variableAccessSerializable="no" id="BpScp1">
+      <compensationHandler id="BpCoH1">
+        <sequence name="Tx1RollbackSequence" id="BpSeq6">
+          <assign name="AssignTx2" id="BpAss4">
+            <copy>
+              <from expression="xp20:current-dateTime()"/>
+              <to variable="Invoke_InputVariable" part="body" query="/ns2:TransactionActivities/ns2:Activity/ns2:Date"/>
+            </copy>
+            <copy>
+              <from expression="&quot;Reverse Tx2&quot;"/>
+              <to variable="Invoke_InputVariable" part="body" query="/ns2:TransactionActivities/ns2:Activity/ns2:Message"/>
+            </copy>
+          </assign>
+          <invoke name="ReverseTx2" inputVariable="Invoke_InputVariable" partnerLink="FileWriteService" portType="ns1:Write_ptt" operation="Write" bpelx:invokeAsDetail="no" id="BpInv2"/>
+        </sequence>
+      </compensationHandler>
+      <sequence name="Tx2Sequence" id="BpSeq7">
+        <assign name="AssignTx2" id="BpAss5">
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="Invoke_InputVariable" part="body" query="/ns2:TransactionActivities/ns2:Activity/ns2:Date"/>
+          </copy>
+          <copy>
+            <from expression="&quot;Invoke Tx2&quot;"/>
+            <to variable="Invoke_InputVariable" part="body" query="/ns2:TransactionActivities/ns2:Activity/ns2:Message"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeTx2" inputVariable="Invoke_InputVariable" partnerLink="FileWriteService" portType="ns1:Write_ptt" operation="Write" bpelx:invokeAsDetail="no" id="BpInv3"/>
+        <switch name="Switch2a" id="BpSwt2">
+          <case condition="bpws:getVariableData('inputVariable','payload','/client:process/client:failStep') = '2a'">
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">ThrowError</bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <sequence name="FaultSequence2a" id="BpSeq8">
+              <assign name="AssignFault" id="BpAss6">
+                <copy>
+                  <from expression="&quot;Failed after Invoke 2 still in scope 2&quot;"/>
+                  <to variable="FaultVar" part="fault" query="/client:businessFault"/>
+                </copy>
+              </assign>
+              <throw name="ThrowBusinessFault" faultName="client:BusinessFault" faultVariable="FaultVar" id="BpThw2"/>
+            </sequence>
+          </case>
+          <otherwise>
+            <empty name="DoNothing" id="BpEmp2"/>
+          </otherwise>
+        </switch>
+      </sequence>
+    </scope>
+    <switch name="Switch2" id="BpSwt3">
+      <case condition="bpws:getVariableData('inputVariable','payload','/client:process/client:failStep') = '2'">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">ThrowError</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <sequence name="FaultSequence2" id="BpSeq9">
+          <assign name="AssignFault" id="BpAss7">
+            <copy>
+              <from expression="&quot;Failed after Invoke 2&quot;"/>
+              <to variable="FaultVar" part="fault" query="/client:businessFault"/>
+            </copy>
+          </assign>
+          <throw name="ThrowBusinessFault" faultName="client:BusinessFault" faultVariable="FaultVar" id="BpThw3"/>
+        </sequence>
+      </case>
+      <otherwise>
+        <empty name="DoNothing" id="BpEmp3"/>
+      </otherwise>
+    </switch>
+    <assign name="AssignResult" id="BpAss8">
+      <copy>
+        <from expression="&quot;Completed Succesfully&quot;"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:result"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="compensationbpelprocess_client" portType="client:CompensationBPELProcess" operation="process" variable="outputVariable" id="BpRpl1"/>
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Jan 09 10:49:59 MST 2012
+  Author:  axreynol
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

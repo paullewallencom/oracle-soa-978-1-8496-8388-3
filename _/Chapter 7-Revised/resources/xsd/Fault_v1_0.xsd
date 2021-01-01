@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://rubiconred.com/ckbk/xsd/fault"
+            targetNamespace="http://rubiconred.com/ckbk/xsd/fault"
+            elementFormDefault="qualified">
+
+    <xsd:element name="fault"                  type="tFault"/>
+    
+    <xsd:complexType name="tFault">
+        <xsd:sequence>
+            <xsd:element name="code"        type="xsd:string"/>
+            <xsd:element name="summary"     type="xsd:string" /> 
+            <xsd:element name="detail"      type="xsd:string" />         
+        </xsd:sequence>
+    </xsd:complexType> 
+
+    
+</xsd:schema>

@@ -1,0 +1,123 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Dec 15 10:41:30 MST 2011
+  Author:  axreynol
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="TransactionIDProcess"
+               targetNamespace="http://soa.cookbook/SOACookbookTransaction/TransactionID/TransactionIDProcess"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://soa.cookbook/SOACookbookTransaction/TransactionID/TransactionIDProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://oracle.com/sca/soapservice/SOACookbookTransaction/TransactionID/TransactionIDService"
+               xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns2="http://transaction.cookbook.soa/"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/SOACookbookTransaction/TransactionID/DBTransactionContext"
+         xmlns:ns4="http://soa.cookbook/Transactions"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/DBTransactionContext"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="transactionidprocess_client" partnerLinkType="ns1:TransactionIDService" myRole="TransactionIDServiceProvider"/>
+    <partnerLink name="TransactionContext.SpringTransactionIDService"
+                 partnerLinkType="ns2:TransactionContext.SpringTransactionIDService"
+                 partnerRole="TransactionID"/>
+    <partnerLink name="DBTransactionContext"
+                 partnerLinkType="ns3:DBTransactionContext_plt"
+                 partnerRole="DBTransactionContext_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:requestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="ns1:replyMessage"/>
+    <variable name="InvokeDB_DBTransactionContext_InputVariable"
+              messageType="ns3:DBTransactionContextInput_msg"/>
+    <variable name="InvokeDB_DBTransactionContext_OutputVariable"
+              messageType="ns3:DBTransactionContextOutputCollection_msg"/>
+    <variable name="InvokeJava_getTransactionID_InputVariable"
+              messageType="ns2:getTransactionIDInput"/>
+    <variable name="InvokeJava_getTransactionID_OutputVariable"
+              messageType="ns2:getTransactionIDOutput"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in TransactionIDProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="transactionidprocess_client" portType="ns1:execute_ptt" operation="getTransactionID" variable="inputVariable" createInstance="yes"/>
+
+    <!-- Generate reply to synchronous request -->
+    <invoke name="InvokeJava"
+            inputVariable="InvokeJava_getTransactionID_InputVariable"
+            outputVariable="InvokeJava_getTransactionID_OutputVariable"
+            partnerLink="TransactionContext.SpringTransactionIDService"
+            portType="ns2:TransactionID" operation="getTransactionID"
+            bpelx:invokeAsDetail="no"/>
+    <invoke name="InvokeDB" bpelx:invokeAsDetail="no"
+            inputVariable="InvokeDB_DBTransactionContext_InputVariable"
+            outputVariable="InvokeDB_DBTransactionContext_OutputVariable"
+            partnerLink="DBTransactionContext"
+            portType="ns3:DBTransactionContext_ptt"
+            operation="DBTransactionContext"/>
+    <assign name="AssignResult">
+      <copy>
+        <from variable="InvokeJava_getTransactionID_OutputVariable"
+              part="parameters"
+              query="/ns2:getTransactionIDResponse/return/formatId"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponse/ns4:JavaTXIDFormat"/>
+      </copy>
+      <copy>
+        <from variable="InvokeDB_DBTransactionContext_OutputVariable"
+              part="DBTransactionContextOutputCollection"
+              query="/ns5:DBTransactionContextOutputCollection/ns5:DBTransactionContextOutput/ns5:LOCAL_TRANSACTION_ID"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponse/ns4:DBTXID"/>
+      </copy>
+      <copy bpelx:ignoreMissingFromData="yes">
+        <from expression="oraext:get-content-as-string(bpws:getVariableData('InvokeJava_getTransactionID_OutputVariable','parameters','/ns2:getTransactionIDResponse/return/globalTransactionId'))"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponse/ns4:JavaGlobalTXID"/>
+      </copy>
+      <copy bpelx:ignoreMissingFromData="yes">
+        <from expression="oraext:get-content-as-string(bpws:getVariableData('InvokeJava_getTransactionID_OutputVariable','parameters','/ns2:getTransactionIDResponse/return/branchQualifier'))"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponse/ns4:JavaBranchID"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="transactionidprocess_client" portType="ns1:execute_ptt" operation="getTransactionID" variable="outputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,34 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TransferDescriptor xmlns="http://xmlns.oracle.com/jdeveloper/110000transfer-descriptor">
+   <value n="cascadeDelete" v="true"/>
+   <value n="dependencyDepth" v="0"/>
+   <value n="includeAllDependencies" v="false"/>
+   <value n="includeDependencies" v="false"/>
+   <value n="manualReconcile" v="false"/>
+   <value n="policy" v="oracle.ideimpl.db.transfer.OnToOnPolicy"/>
+   <value n="reconcile" v="false"/>
+   <value n="replace" v="true"/>
+   <value n="schemaNames" v="false"/>
+   <list n="schemaObjectDescriptors">
+      <hash>
+         <value n="name" v="TEST_SEQUENCE"/>
+         <value n="schemaName" v="TEST"/>
+         <value n="type" v="SEQUENCE"/>
+      </hash>
+      <hash>
+         <value n="name" v="TEST_TABLE"/>
+         <value n="schemaName" v="TEST"/>
+         <value n="type" v="TABLE"/>
+      </hash>
+   </list>
+   <value n="sourceConnectionStore" v="IdeConnections"/>
+   <value n="sourceIdentifier" v="SOAVBOX_TEST"/>
+   <value n="spoolCommands" v="false"/>
+   <url n="sqlFile" path="createTestSchema.sql"/>
+   <value n="sqlPlus" v="false"/>
+   <hash n="targets">
+      <hash n="oracle.ideimpl.db.transfer.DDLTransferTarget"/>
+   </hash>
+   <value n="targetSchemaName"/>
+   <value n="targetTableSpace"/>
+</TransferDescriptor>

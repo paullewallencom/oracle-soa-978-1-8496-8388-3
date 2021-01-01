@@ -1,0 +1,206 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Jun 20 15:41:48 MDT 2012
+  Author:  axreynol
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="EchoClientBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/SOACookbookManagement/EchoClientComposite/EchoClientBPELProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/SOACookbookManagement/EchoClientComposite/EchoClientBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/SOACookbookManagement/EchoComposite/EchoBPELProcess"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+  <import namespace="http://xmlns.oracle.com/SOACookbookManagement/EchoClientComposite/EchoClientBPELProcess"
+          location="xsd/EchoClientBPELProcess.xsd"
+          importType="http://www.w3.org/2001/XMLSchema"/>
+  <import namespace="http://xmlns.oracle.com/SOACookbookManagement/EchoClientComposite/EchoClientBPELProcess" location="EchoClientBPELProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="echoclientbpelprocess_client" partnerLinkType="client:EchoClientBPELProcess" myRole="EchoClientBPELProcessProvider"/>
+    <partnerLink name="EchoService" partnerLinkType="ns1:EchoBPELProcess"
+                 partnerRole="EchoBPELProcessProvider"/>
+    <partnerLink name="EchoDirectService" partnerLinkType="ns1:EchoBPELProcess"
+                 partnerRole="EchoBPELProcessProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:EchoClientBPELProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:EchoClientBPELProcessResponseMessage"/>
+    <variable name="Timing" element="client:timing"/>
+    <variable name="localWS" type="xsd:int">
+      <from><literal>1</literal></from>
+    </variable>
+    <variable name="frontendWS" type="xsd:int">
+      <from><literal>2</literal></from>
+    </variable>
+    <variable name="localDirect" type="xsd:int">
+      <from>3</from>
+    </variable>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in EchoClientBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="echoclientbpelprocess_client" portType="client:EchoClientBPELProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="AssignResponse">
+      <copy>
+        <from>$inputVariable.payload/client:iterations</from>
+        <to>$outputVariable.payload/client:iterations</to>
+      </copy>
+    </assign>
+    <forEach parallel="no" counterName="ForEachEndpointCounter" name="ForEachEndpoint">
+      <startCounterValue>1</startCounterValue>
+      <finalCounterValue>3</finalCounterValue>
+      <scope name="Scope2">
+        <sequence>
+          <assign name="AssignLocalHost">
+            <bpelx:skipCondition>$ForEachEndpointCounter != $localWS</bpelx:skipCondition>
+            <copy>
+              <from><literal><sref:service-ref xmlns:sref="http://docs.oasis-open.org/wsbpel/2.0/serviceref">
+  <EndpointReference xmlns="http://schemas.xmlsoap.org/ws/2003/03/addressing">
+    <Address>http://localhost:7001/soa-infra/services/default/EchoComposite/echobpelprocess_client_ep</Address>
+  </EndpointReference>
+</sref:service-ref></literal></from>
+              <to partnerLink="EchoService"/>
+            </copy>
+          </assign>
+          <assign name="AssignNamedHost">
+            <bpelx:skipCondition>$ForEachEndpointCounter != $frontendWS</bpelx:skipCondition>
+            <copy>
+              <from><literal><sref:service-ref xmlns:sref="http://docs.oasis-open.org/wsbpel/2.0/serviceref">
+  <EndpointReference xmlns="http://schemas.xmlsoap.org/ws/2003/03/addressing">
+    <Address>http://soavbox.oracle.com:7001/soa-infra/services/default/EchoComposite/echobpelprocess_client_ep</Address>
+  </EndpointReference>
+</sref:service-ref></literal></from>
+              <to partnerLink="EchoService"/>
+            </copy>
+          </assign>
+          <assign name="AssignStartTime">
+            <copy>
+              <from>xp20:current-dateTime()</from>
+              <to>$Timing/client:startTime</to>
+            </copy>
+          </assign>
+          <forEach parallel="no" counterName="ForEachEchoCounter"
+                   name="ForEachEcho">
+            <startCounterValue>1</startCounterValue>
+            <finalCounterValue>$inputVariable.payload/client:iterations</finalCounterValue>
+            <scope name="Scope1">
+              <variables>
+                <variable name="InvokeLocalEchoService_process_InputVariable"
+                          messageType="ns1:EchoBPELProcessRequestMessage"/>
+                <variable name="InvokeLocalEchoService_process_OutputVariable"
+                          messageType="ns1:EchoBPELProcessResponseMessage"/>
+              </variables>
+              <sequence name="Sequence1">
+                <assign name="AssignEchoInput">
+                  <copy>
+                    <from>'Localhost'</from>
+                    <to>$InvokeLocalEchoService_process_InputVariable.payload/ns1:input</to>
+                  </copy>
+                </assign>
+                <invoke name="InvokeWSEchoService" partnerLink="EchoService"
+                        portType="ns1:EchoBPELProcess" operation="process"
+                        inputVariable="InvokeLocalEchoService_process_InputVariable"
+                        outputVariable="InvokeLocalEchoService_process_OutputVariable"
+                        bpelx:invokeAsDetail="no">
+                  <bpelx:skipCondition>$ForEachEndpointCounter = $localDirect</bpelx:skipCondition>
+                </invoke>
+                <invoke name="InvokeDirectEchoService"
+                        partnerLink="EchoDirectService"
+                        portType="ns1:EchoBPELProcess" operation="process"
+                        inputVariable="InvokeLocalEchoService_process_InputVariable"
+                        outputVariable="InvokeLocalEchoService_process_OutputVariable"
+                        bpelx:invokeAsDetail="no">
+                  <bpelx:skipCondition>$ForEachEndpointCounter  != $localDirect</bpelx:skipCondition>
+                </invoke>
+              </sequence>
+            </scope>
+          </forEach>
+          <assign name="AssignEndTime">
+            <copy>
+              <from>xp20:current-dateTime()</from>
+              <to>$Timing/client:endTime</to>
+            </copy>
+          </assign>
+          <assign name="TransformElapsed">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"/>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("xsl/TransformationElapsedTime.xsl", $Timing)</from>
+              <to variable="Timing"/>
+            </copy>
+          </assign>
+          <assign name="AssignElapsedLocalHost">
+            <bpelx:skipCondition>$ForEachEndpointCounter != $localWS</bpelx:skipCondition>
+            <copy>
+              <from>$Timing/client:elapsedTime</from>
+              <to>$outputVariable.payload/client:LocalHostTime</to>
+            </copy>
+          </assign>
+          <assign name="AssignElapsedNamedHost">
+            <bpelx:skipCondition>$ForEachEndpointCounter != $frontendWS</bpelx:skipCondition>
+            <copy>
+              <from>$Timing/client:elapsedTime</from>
+              <to>$outputVariable.payload/client:NamedHostTime</to>
+            </copy>
+          </assign>
+          <assign name="AssignElapsedDirect">
+            <bpelx:skipCondition>$ForEachEndpointCounter != $localDirect</bpelx:skipCondition>
+            <copy>
+              <from>$Timing/client:elapsedTime</from>
+              <to>$outputVariable.payload/client:LocalDirectTime</to>
+            </copy>
+          </assign>
+        </sequence>
+      </scope>
+    </forEach>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="echoclientbpelprocess_client" portType="client:EchoClientBPELProcess" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

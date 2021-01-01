@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:file="http://www.bea.com/wli/sb/transports/file" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+  <ser:coreEntry isProxy="true" isEnabled="true">
+    <ser:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+      <con:request type="Binary"/>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>file</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>file:///home/oracle/gzip/in</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>false</tran:all-headers>
+    <tran:provider-specific>
+      <file:inbound-properties>
+        <file:fileMask>*.gz</file:fileMask>
+        <file:pollingInterval>60</file:pollingInterval>
+        <file:sortByArrival>false</file:sortByArrival>
+        <file:postAction>Archive</file:postAction>
+        <file:readLimit>10</file:readLimit>
+        <file:passByReference>false</file:passByReference>
+        <file:scanSubDirectories>false</file:scanSubDirectories>
+        <file:archiveDir>
+          <env:value>file:///home/oracle/gzip/archive</env:value>
+        </file:archiveDir>
+        <file:stageDir>
+          <env:value>file:///home/oracle/gzip/stage</env:value>
+        </file:stageDir>
+        <file:errorDir>
+          <env:value>file:///home/oracle/gzip/error</env:value>
+        </file:errorDir>
+      </file:inbound-properties>
+      <file:request-encoding>utf-8</file:request-encoding>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router>
+    <con:pipeline type="request" name="PipelinePairNode1_request">
+      <con:stage name="Extract GZIP">
+        <con:context/>
+        <con:actions>
+          <con1:assign varName="gzBinaryContent">
+            <con2:id>_ActionId-4055960772692324891--1507e5ff.13ac89a9bbf.-7fd3</con2:id>
+            <con1:expr>
+              <con2:xqueryText>$body/ctx:binary-content</con2:xqueryText>
+            </con1:expr>
+          </con1:assign>
+          <con1:javaCallout varName="payload">
+            <con2:id>_ActionId-4055960772692324891--1507e5ff.13ac89a9bbf.-7fa2</con2:id>
+            <con1:archive ref="GzipFileAdapter/jars/GzipAdapter"/>
+            <con1:className>com.rubiconred.osb.gzip.GzipAdapter</con1:className>
+            <con1:method>public static org.apache.xmlbeans.XmlObject readGzipObject(java.lang.Object)</con1:method>
+            <con1:expr>
+              <con2:xqueryText>$gzBinaryContent</con2:xqueryText>
+            </con1:expr>
+          </con1:javaCallout>
+        </con:actions>
+      </con:stage>
+      <con:stage name="ReportingStage">
+        <con:context/>
+        <con:actions>
+          <con3:log>
+            <con2:id>_ActionId-4055960772692324891--1507e5ff.13ac89a9bbf.-7f69</con2:id>
+            <con3:logLevel>error</con3:logLevel>
+            <con3:expr>
+              <con2:xqueryText>$payload</con2:xqueryText>
+            </con3:expr>
+            <con3:message>GzipFileAdapter message payload:</con3:message>
+          </con3:log>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="response" name="PipelinePairNode1_response"/>
+    <con:flow>
+      <con:pipeline-node name="PipelinePairNode1">
+        <con:request>PipelinePairNode1_request</con:request>
+        <con:response>PipelinePairNode1_response</con:response>
+      </con:pipeline-node>
+    </con:flow>
+  </ser:router>
+</xml-fragment>

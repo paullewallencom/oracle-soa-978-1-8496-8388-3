@@ -1,0 +1,190 @@
+!SESSION 2012-11-04 10:28:19.973 -----------------------------------------------
+eclipse.buildId=M20110909-1335
+java.version=1.6.0_29
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -data C:\Workspace\CKBK\Chapter08\Receipe_01\osb -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.jface 2 0 2012-11-04 10:28:28.033
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2012-11-04 10:28:28.033
+!MESSAGE A conflict occurred for ALT+SHIFT+R:
+Binding(ALT+SHIFT+R,
+	ParameterizedCommand(Command(oracle.eclipse.tools.common.services.ui.refactor.rename.command,Rename,
+		Rename the selected text.,
+		Category(org.eclipse.jdt.ui.category.refactoring,Refactor - Java,Java Refactoring Actions,true),
+		oracle.eclipse.tools.common.services.ui.refactor.internal.ArtifactRefactoringCommandHandler,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(ALT+SHIFT+R,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.edit.text.java.rename.element,Rename - Refactoring ,
+		Rename the selected element,
+		Category(org.eclipse.jdt.ui.category.refactoring,Refactor - Java,Java Refactoring Actions,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2012-11-04 10:28:28.033
+!MESSAGE A conflict occurred for CTRL+DEL:
+Binding(CTRL+DEL,
+	ParameterizedCommand(Command(org.eclipse.datatools.sqltools.result.removeInstance,Remove Result,
+		,
+		Category(org.eclipse.datatools.sqltools.result.category,SQL Results View,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(CTRL+DEL,
+	ParameterizedCommand(Command(org.eclipse.graphiti.ui.internal.action.RemoveAction,Remove,
+		Remove selected Pictogram Elements,
+		Category(org.eclipse.graphiti.ui.Graphiti_Category,Edit,Graphiti Diagram Editor,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+
+!ENTRY org.python.pydev.core 4 4 2012-11-04 10:28:29.949
+!MESSAGE Server returned HTTP response code: 500 for URL: https://ping.aptana.com/ping.php
+!STACK 0
+java.io.IOException: Server returned HTTP response code: 500 for URL: https://ping.aptana.com/ping.php
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1436)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:234)
+	at org.python.pydev.logging.ping.LogPingSender.sendPing(LogPingSender.java:72)
+	at org.python.pydev.logging.ping.SynchedLogPing.send(SynchedLogPing.java:164)
+	at org.python.pydev.logging.ping.AsyncLogPing.consumeAllCommands(AsyncLogPing.java:131)
+	at org.python.pydev.logging.ping.AsyncLogPing.access$0(AsyncLogPing.java:100)
+	at org.python.pydev.logging.ping.AsyncLogPing$1.run(AsyncLogPing.java:47)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:27.559
+!MESSAGE Started WebLogic Server Monitor [Remote WebLogic @soabpm-vm:7001, Version:10.3.6]
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:27.568
+!MESSAGE Server watcher[Oracle WebLogic Server 11gR1 (10.3.6) at [soabpm-vm]]:running Weblogic detected, validating...
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:32.184
+!MESSAGE Creating Deployment manager...
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:32.186
+!MESSAGE Elapsed time 1673ms
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:32.188
+!MESSAGE Deployment manager created :[Oracle WebLogic Server 11gR1 (10.3.6) at [soabpm-vm]]@8067891
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:37.525
+!MESSAGE Publishing beginning.
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:41.373
+!MESSAGE Found new module:[OSB Configuration]
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:41.376
+!MESSAGE Found deployable module: com.bea.alsb.core.internal.deployables:OSB Configuration : bea.alsb.container.module
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:41.377
+!MESSAGE Found new module:[OSB Configuration,GzipFileAdapter]
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:41.378
+!MESSAGE Found deployable module: com.bea.alsb.core.internal.deployables:OSB Configuration : bea.alsb.container.module
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:41.379
+!MESSAGE Releasing deployment manager :[Oracle WebLogic Server 11gR1 (10.3.6) at [soabpm-vm]]@8067891
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:42.378
+!MESSAGE Creating Deployment manager...
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:42.379
+!MESSAGE Elapsed time 972ms
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:42.381
+!MESSAGE Deployment manager created :[Oracle WebLogic Server 11gR1 (10.3.6) at [soabpm-vm]]@3207682
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:25:48.297
+!MESSAGE Total deleted modules: 0
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:25:48.382
+!MESSAGE Starting ALSB publish.
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:25:48.389
+!MESSAGE Added 2 modules out of 2
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:25:48.393
+!MESSAGE Publishing new ALSB configuration: OSB Configuration
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:25:53.485
+!MESSAGE Beginning import to ALSB server.
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:26:06.997
+!MESSAGE Import to ALSB server completed.
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:26:06.999
+!MESSAGE No Weblogic J2EE module to publish
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:26:07.000
+!MESSAGE Publishing finished.
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:28:33.992
+!MESSAGE Publishing beginning.
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:28:34.019
+!MESSAGE Module not changed:[OSB Configuration]
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:28:34.021
+!MESSAGE Found deployable module: com.bea.alsb.core.internal.deployables:OSB Configuration : bea.alsb.container.module
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:28:34.023
+!MESSAGE Module changed:[OSB Configuration,GzipFileAdapter]
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:28:34.024
+!MESSAGE Found deployable module: com.bea.alsb.core.internal.deployables:OSB Configuration : bea.alsb.container.module
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:28:34.026
+!MESSAGE Total deleted modules: 0
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:34.028
+!MESSAGE Starting ALSB publish.
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:34.029
+!MESSAGE Added 2 modules out of 2
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:34.252
+!MESSAGE ALSB Publish Summary: Deleted Projects
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:34.254
+!MESSAGE No deleted projects to publish.
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:34.286
+!MESSAGE ALSB Publish Summary: Added/Removed/Changed
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:34.288
+!MESSAGE Will publish: GzipFileWriter.biz
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:34.290
+!MESSAGE Will publish: ReadGzipFile.proxy
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:34.291
+!MESSAGE No removed resources to publish.
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:35.412
+!MESSAGE Beginning import to ALSB server.
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:38.518
+!MESSAGE Import to ALSB server completed.
+
+!ENTRY com.bea.alsb.server.publish 1 0 2012-11-04 12:28:38.520
+!MESSAGE ALSB publish finished.
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:28:38.522
+!MESSAGE Module changed:[OSB Configuration,GzipFileAdapter]
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:28:38.524
+!MESSAGE No Weblogic J2EE module to publish
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 12:28:38.525
+!MESSAGE Publishing finished.
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 14:23:50.863
+!MESSAGE Releasing deployment manager :[Oracle WebLogic Server 11gR1 (10.3.6) at [soabpm-vm]]@3207682
+
+!ENTRY oracle.eclipse.tools.weblogic 1 2000 2012-11-04 14:23:50.872
+!MESSAGE Stopped WebLogic Server Monitor [Remote WebLogic @soabpm-vm:7001, Version:10.3.6]

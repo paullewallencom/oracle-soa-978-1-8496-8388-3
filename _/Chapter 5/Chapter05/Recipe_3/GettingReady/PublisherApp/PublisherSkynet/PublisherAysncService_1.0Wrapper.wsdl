@@ -1,0 +1,15 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="PublisherService"
+     targetNamespace="http://rubiconred.com/ckbk/svc/PublisherAsyncService"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://rubiconred.com/ckbk/svc/PublisherAsyncService"
+     xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <plnk:partnerLinkType name="PublisherAsyncService">
+        <plnk:role name="PublisherAsyncService" portType="tns:PublisherAsyncService"/>
+    </plnk:partnerLinkType>
+    <wsdl:import namespace="http://rubiconred.com/ckbk/svc/PublisherAsyncService" location="PublisherAysncService_1.0.wsdl"/>
+</wsdl:definitions>

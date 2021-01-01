@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="EmployeeEJBBean"
+     targetNamespace="http://cookbook.soa/"
+     xmlns:tns="http://cookbook.soa/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+     xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+     xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    >
+    <wsdl:types>
+        <xsd:schema xmlns:ns0="http://cookbook.soa/types" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             targetNamespace="http://cookbook.soa/types">
+            <xsd:complexType name="address">
+                <xsd:sequence>
+                    <xsd:element name="addr" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="city" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="employee">
+                <xsd:sequence>
+                    <xsd:element name="ENum" type="xsd:long"/>
+                    <xsd:element name="address" type="ns0:address" minOccurs="0"/>
+                    <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="phone" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+        <xsd:schema targetNamespace="http://cookbook.soa/" xmlns:tns="http://cookbook.soa/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:ns1="http://cookbook.soa/types">
+            <xsd:import namespace="http://cookbook.soa/types"/>
+            <xsd:complexType name="addEmployee">
+                <xsd:sequence>
+                    <xsd:element name="arg0" type="ns1:employee"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="addEmployee" type="tns:addEmployee"/>
+            <xsd:complexType name="addEmployeeResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="ns1:employee"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="addEmployeeResponse" type="tns:addEmployeeResponse"/>
+            <xsd:complexType name="getEmployeeByNumber">
+                <xsd:sequence>
+                    <xsd:element name="arg0" type="xsd:long"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getEmployeeByNumber" type="tns:getEmployeeByNumber"/>
+            <xsd:complexType name="getEmployeeByNumberResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="ns1:employee"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getEmployeeByNumberResponse" type="tns:getEmployeeByNumberResponse"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="addEmployeeInput">
+        <wsdl:part name="parameters" element="tns:addEmployee"/>
+    </wsdl:message>
+    <wsdl:message name="addEmployeeOutput">
+        <wsdl:part name="parameters" element="tns:addEmployeeResponse"/>
+    </wsdl:message>
+    <wsdl:message name="getEmployeeByNumberInput">
+        <wsdl:part name="parameters" element="tns:getEmployeeByNumber"/>
+    </wsdl:message>
+    <wsdl:message name="getEmployeeByNumberOutput">
+        <wsdl:part name="parameters" element="tns:getEmployeeByNumberResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="EmployeeEJBBean">
+        <wsdl:operation name="addEmployee">
+            <wsdl:input message="tns:addEmployeeInput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:output message="tns:addEmployeeOutput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+        </wsdl:operation>
+        <wsdl:operation name="getEmployeeByNumber">
+            <wsdl:input message="tns:getEmployeeByNumberInput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:output message="tns:getEmployeeByNumberOutput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

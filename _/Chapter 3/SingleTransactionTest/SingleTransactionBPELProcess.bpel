@@ -1,0 +1,193 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Dec 15 16:13:59 MST 2011
+  Author:  axreynol
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SingleTransactionBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/SOACookbookTransaction/SingleTransactionTest/SingleTransactionBPELProcess"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/SOACookbookTransaction/SingleTransactionTest/SingleTransactionBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://oracle.com/sca/soapservice/SOACookbookTransaction/SingleTransactionTest/SingleTransactionService"
+               xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns2="http://oracle.com/sca/soapservice/SOACookbookTransaction/TransactionID/TransactionIDService"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/SOACookbookTransaction/SingleTransactionTest/InsertTestTableService"
+         xmlns:ns4="http://soa.cookbook/Transactions"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/top/InsertTestTableService"
+         xmlns:blog="http://www.oracle.com/XSL/Transform/java/antony.blog.XPathImpl"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:stat="http://www.oracle.com/XSL/Transform/java/soa.cookbook.xpath.StdDev"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="singletransactionbpelprocess_client" partnerLinkType="ns1:SingleTransactionService" myRole="SingleTransactionServiceProvider"/>
+    <partnerLink name="TransactionIDService"
+                 partnerLinkType="ns2:TransactionIDService"
+                 partnerRole="TransactionIDServiceProvider"/>
+    <partnerLink name="InsertTestTableService"
+                 partnerLinkType="ns3:InsertTestTableService_plt"
+                 partnerRole="InsertTestTableService_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:requestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="ns1:replyMessage"/>
+    <variable name="getTransactionID_InputVariable"
+              messageType="ns2:requestMessage"/>
+    <variable name="getTransactionID_OutputVariable"
+              messageType="ns2:replyMessage"/>
+    <variable name="insert_InputVariable"
+              messageType="ns3:TestTableCollection_msg"/>
+    <variable name="insert_OutputVariable"
+              messageType="ns3:TestTableCollection_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in SingleTransactionBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="singletransactionbpelprocess_client" portType="ns1:execute_ptt" operation="execute" variable="inputVariable" createInstance="yes"/>
+
+    <!-- Generate reply to synchronous request -->
+    <assign name="AssignInitValues">
+      <copy>
+        <from variable="inputVariable" part="request"
+              query="/ns4:TransactionRequest/ns4:JavaRequired"/>
+        <to variable="getTransactionID_InputVariable" part="request"
+            query="/ns4:TransactionRequest/ns4:JavaRequired"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="request"
+              query="/ns4:TransactionRequest/ns4:DBRequired"/>
+        <to variable="getTransactionID_InputVariable" part="request"
+            query="/ns4:TransactionRequest/ns4:DBRequired"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeTransactionIDService" bpelx:invokeAsDetail="no"
+            inputVariable="getTransactionID_InputVariable"
+            outputVariable="getTransactionID_OutputVariable"
+            partnerLink="TransactionIDService" portType="ns2:execute_ptt"
+            operation="getTransactionID"/>
+    <assign name="AssignResult">
+      <copy>
+        <from variable="getTransactionID_OutputVariable" part="response"
+              query="/ns4:TransactionResponse/ns4:JavaGlobalTXID"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponsePair/ns4:preCall/ns4:JavaGlobalTXID"/>
+      </copy>
+      <copy>
+        <from variable="getTransactionID_OutputVariable" part="response"
+              query="/ns4:TransactionResponse/ns4:JavaTXIDFormat"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponsePair/ns4:preCall/ns4:JavaTXIDFormat"/>
+      </copy>
+      <copy>
+        <from variable="getTransactionID_OutputVariable" part="response"
+              query="/ns4:TransactionResponse/ns4:JavaBranchID"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponsePair/ns4:preCall/ns4:JavaBranchID"/>
+      </copy>
+      <copy>
+        <from variable="getTransactionID_OutputVariable" part="response"
+              query="/ns4:TransactionResponse/ns4:DBTXID"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponsePair/ns4:preCall/ns4:DBTXID"/>
+      </copy>
+      <copy>
+        <from variable="getTransactionID_OutputVariable" part="response"
+              query="/ns4:TransactionResponse/ns4:DBTXID"/>
+        <to variable="insert_InputVariable" part="TestTableCollection"
+            query="/ns5:TestTableCollection/ns5:TestTable/ns5:txid"/>
+      </copy>
+      <copy>
+        <from expression="'Insert'"/>
+        <to variable="insert_InputVariable" part="TestTableCollection"
+            query="/ns5:TestTableCollection/ns5:TestTable/ns5:remarks"/>
+      </copy>
+      <copy>
+        <from expression="xp20:current-dateTime()"/>
+        <to variable="insert_InputVariable" part="TestTableCollection"
+            query="/ns5:TestTableCollection/ns5:TestTable/ns5:insertiondate"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeInsertTestTableService"
+            inputVariable="insert_InputVariable"
+            outputVariable="insert_OutputVariable"
+            partnerLink="InsertTestTableService"
+            portType="ns3:InsertTestTableService_ptt" operation="insert"
+            bpelx:invokeAsDetail="no"/>
+    <invoke name="InvokeTransactionIDService" bpelx:invokeAsDetail="no"
+            inputVariable="getTransactionID_InputVariable"
+            outputVariable="getTransactionID_OutputVariable"
+            partnerLink="TransactionIDService" portType="ns2:execute_ptt"
+            operation="getTransactionID"/>
+    <assign name="AssignResult">
+      <copy>
+        <from variable="getTransactionID_OutputVariable" part="response"
+              query="/ns4:TransactionResponse/ns4:JavaGlobalTXID"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponsePair/ns4:postCall/ns4:JavaGlobalTXID"/>
+      </copy>
+      <copy>
+        <from variable="getTransactionID_OutputVariable" part="response"
+              query="/ns4:TransactionResponse/ns4:JavaTXIDFormat"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponsePair/ns4:postCall/ns4:JavaTXIDFormat"/>
+      </copy>
+      <copy>
+        <from variable="getTransactionID_OutputVariable" part="response"
+              query="/ns4:TransactionResponse/ns4:JavaBranchID"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponsePair/ns4:postCall/ns4:JavaBranchID"/>
+      </copy>
+      <copy>
+        <from variable="getTransactionID_OutputVariable" part="response"
+              query="/ns4:TransactionResponse/ns4:DBTXID"/>
+        <to variable="outputVariable" part="response"
+            query="/ns4:TransactionResponsePair/ns4:postCall/ns4:DBTXID"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="singletransactionbpelprocess_client" portType="ns1:execute_ptt" operation="execute" variable="outputVariable"/>
+  </sequence>
+</process>

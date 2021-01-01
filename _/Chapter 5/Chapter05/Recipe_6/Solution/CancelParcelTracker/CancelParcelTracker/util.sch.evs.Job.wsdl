@@ -1,0 +1,147 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Oracle JAX-WS 2.1.5. -->
+<WL5G3N0:definitions
+     name="util.sch.evs.Job"
+     targetNamespace="http://rubiconred.com/evs/util.sch.Job"
+     xmlns:WL5G3N2="http://schemas.xmlsoap.org/wsdl/soap/"
+     xmlns:WL5G3N0="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:WL5G3N1="http://rubiconred.com/evs/util.sch.Job"
+    >
+    <WL5G3N0:documentation>Version 2.0</WL5G3N0:documentation>
+    <WL5G3N0:types>
+        <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:flt="http://rubiconred.com/ebo/util.flt.Fault"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://rubiconred.com/evs/util.sch.Job"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://rubiconred.com/evs/util.sch.Job" schemaLocation="util.sch.evs.Job_xsd_2.xsd"/>
+        </xsd:schema>
+    </WL5G3N0:types>
+    <WL5G3N0:message name="getJob">
+        <WL5G3N0:part name="payload" element="WL5G3N1:getJob"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="getJobResponse">
+        <WL5G3N0:part name="payload" element="WL5G3N1:getJobResponse"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="jobFault">
+        <WL5G3N0:part name="payload" element="WL5G3N1:jobFault"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="putJob">
+        <WL5G3N0:part name="payload" element="WL5G3N1:putJob"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="putJobResponse">
+        <WL5G3N0:part name="payload" element="WL5G3N1:putJobResponse"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="removeJob">
+        <WL5G3N0:part name="payload" element="WL5G3N1:removeJob"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="removeJobResponse">
+        <WL5G3N0:part name="payload" element="WL5G3N1:removeJobResponse"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="queryJobs">
+        <WL5G3N0:part name="payload" element="WL5G3N1:queryJobs"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="queryJobsResponse">
+        <WL5G3N0:part name="payload" element="WL5G3N1:queryJobsResponse"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="getAllJobs">
+        <WL5G3N0:part name="payload" element="WL5G3N1:getAllJobs"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="getAllJobsResponse">
+        <WL5G3N0:part name="payload" element="WL5G3N1:getAllJobsResponse"/>
+    </WL5G3N0:message>
+    <WL5G3N0:portType name="util.sch.evs.Job">
+        <WL5G3N0:operation name="getJob">
+            <WL5G3N0:input message="WL5G3N1:getJob"/>
+            <WL5G3N0:output message="WL5G3N1:getJobResponse"/>
+            <WL5G3N0:fault name="jobFault" message="WL5G3N1:jobFault"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="putJob">
+            <WL5G3N0:input message="WL5G3N1:putJob"/>
+            <WL5G3N0:output message="WL5G3N1:putJobResponse"/>
+            <WL5G3N0:fault name="jobFault" message="WL5G3N1:jobFault"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="removeJob">
+            <WL5G3N0:input message="WL5G3N1:removeJob"/>
+            <WL5G3N0:output message="WL5G3N1:removeJobResponse"/>
+            <WL5G3N0:fault name="jobFault" message="WL5G3N1:jobFault"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="queryJobs">
+            <WL5G3N0:input message="WL5G3N1:queryJobs"/>
+            <WL5G3N0:output message="WL5G3N1:queryJobsResponse"/>
+            <WL5G3N0:fault name="jobFault" message="WL5G3N1:jobFault"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="getAllJobs">
+            <WL5G3N0:input message="WL5G3N1:getAllJobs"/>
+            <WL5G3N0:output message="WL5G3N1:getAllJobsResponse"/>
+            <WL5G3N0:fault name="jobFault" message="WL5G3N1:jobFault"/>
+        </WL5G3N0:operation>
+    </WL5G3N0:portType>
+    <WL5G3N0:binding name="util.sch.evs.Job.Binding" type="WL5G3N1:util.sch.evs.Job">
+        <WL5G3N2:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <WL5G3N0:operation name="getJob">
+            <WL5G3N2:operation style="document" soapAction="getJob"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body use="literal"/>
+            </WL5G3N0:output>
+            <WL5G3N0:fault name="jobFault">
+                <WL5G3N2:fault name="jobFault" use="literal"/>
+            </WL5G3N0:fault>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="putJob">
+            <WL5G3N2:operation style="document" soapAction="putJob"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body use="literal"/>
+            </WL5G3N0:output>
+            <WL5G3N0:fault name="jobFault">
+                <WL5G3N2:fault name="jobFault" use="literal"/>
+            </WL5G3N0:fault>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="removeJob">
+            <WL5G3N2:operation style="document" soapAction="removeJob"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body use="literal"/>
+            </WL5G3N0:output>
+            <WL5G3N0:fault name="jobFault">
+                <WL5G3N2:fault name="jobFault" use="literal"/>
+            </WL5G3N0:fault>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="queryJobs">
+            <WL5G3N2:operation style="document" soapAction="queryJobs"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body use="literal"/>
+            </WL5G3N0:output>
+            <WL5G3N0:fault name="jobFault">
+                <WL5G3N2:fault name="jobFault" use="literal"/>
+            </WL5G3N0:fault>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="getAllJobs">
+            <WL5G3N2:operation style="document" soapAction="getAllJobs"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body use="literal"/>
+            </WL5G3N0:output>
+            <WL5G3N0:fault name="jobFault">
+                <WL5G3N2:fault name="jobFault" use="literal"/>
+            </WL5G3N0:fault>
+        </WL5G3N0:operation>
+    </WL5G3N0:binding>
+    <WL5G3N0:service name="util.sch.evs.Job">
+        <WL5G3N0:documentation>Rubicon Red Scheduler Job Service v2.0</WL5G3N0:documentation>
+        <WL5G3N0:port name="util.sch.evs.Job.Port" binding="WL5G3N1:util.sch.evs.Job.Binding">
+            <WL5G3N2:address location="http://localhost:7001/RXRScheduler_2.0/util.sch.evs.Job"/>
+        </WL5G3N0:port>
+    </WL5G3N0:service>
+</WL5G3N0:definitions>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/SOACookbookMapping/ArrayProcessing/ArrayProcess"
+  xmlns:tns="http://xmlns.oracle.com/SOACookbookMapping/ArrayProcessing/ArrayProcess"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+ <complexType name="productQuoteType">
+  <sequence>
+   <element name="productName" type="string"/>
+   <element name="vendors">
+    <complexType>
+     <sequence>
+      <element name="vendorQuote" maxOccurs="unbounded"
+               type="tns:vendorQuoteType"/>
+     </sequence>
+    </complexType>
+   </element>
+  </sequence>
+ </complexType>
+ <complexType name="vendorQuoteType">
+  <sequence>
+   <element name="vendorName" type="string"/>
+   <element name="price" type="decimal"/>
+  </sequence>
+ </complexType>
+ <complexType name="lowestQuoteType">
+  <complexContent>
+   <extension base="tns:productQuoteType">
+    <sequence>
+     <element name="lowestPrice" type="decimal"/>
+     <element name="highestPrice" type="decimal"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
+ <element name="quotes">
+		<complexType>
+			<sequence>
+    <element name="productQuote" maxOccurs="unbounded"
+             type="tns:productQuoteType"/>
+   </sequence>
+		</complexType>
+	</element>
+	<element name="lowestQuotes">
+		<complexType>
+			<sequence>
+    <element name="productLowestQuote" maxOccurs="unbounded"
+             type="tns:lowestQuoteType"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

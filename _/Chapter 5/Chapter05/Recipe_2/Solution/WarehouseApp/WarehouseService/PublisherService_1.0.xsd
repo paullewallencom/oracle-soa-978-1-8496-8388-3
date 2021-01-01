@@ -1,0 +1,27 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema targetNamespace="http://rubiconred.com/ckbk/svc/PublisherService" elementFormDefault="qualified"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rubiconred.com/ckbk/svc/PublisherService"
+     xmlns:bse="http://rubiconred.com/ckbk/xsd/base" xmlns:cmn="http://rubiconred.com/ckbk/xsd/common"
+     xmlns:bk="http://rubiconred.com/ckbk/xsd/book">
+    <xsd:import namespace="http://rubiconred.com/ckbk/xsd/base" schemaLocation="./xsd/Base_1.0.xsd"/>
+    <xsd:import namespace="http://rubiconred.com/ckbk/xsd/common" schemaLocation="./xsd/Common_1.0.xsd"/>
+    <xsd:import namespace="http://rubiconred.com/ckbk/xsd/book" schemaLocation="./xsd/Book_1.0.xsd"/>
+    <xsd:element name="submitBookOrderList" type="SubmitBookOrderList"/>
+    <xsd:element name="submitBookOrderListResponse" type="SubmitBookOrderListResponse"/>
+    <xsd:element name="submitBookOrder" type="SubmitBookOrder"/>
+    <xsd:element name="submitBookOrderResponse" type="SubmitBookOrderResponse"/>
+    <xsd:complexType name="SubmitBookOrderList">
+        <xsd:sequence>
+            <xsd:element name="publisher" type="xsd:string"/>
+            <xsd:element ref="bk:bookOrderList"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="SubmitBookOrderListResponse"/>
+    <xsd:complexType name="SubmitBookOrder">
+        <xsd:sequence>
+            <xsd:element name="publisher" type="xsd:string"/>
+            <xsd:element ref="bk:bookOrder"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="SubmitBookOrderResponse"/>
+</xsd:schema>

@@ -1,0 +1,25 @@
+<?binding.jca DBTransactionContext_db.jca?>
+<wsdl:definitions name="DBTransactionContext" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/SOACookbookTransaction/TransactionID/DBTransactionContext" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/DBTransactionContext" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/SOACookbookTransaction/TransactionID/DBTransactionContext" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+    <plt:partnerLinkType name="DBTransactionContext_plt">
+        <plt:role name="DBTransactionContext_role">
+            <plt:portType name="tns:DBTransactionContext_ptt"/>
+        </plt:role>
+    </plt:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/DBTransactionContext" schemaLocation="xsd/DBTransactionContext.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="DBTransactionContextInput_msg">
+        <wsdl:part name="DBTransactionContextInput_msg" element="db:DBTransactionContextInput"/>
+    </wsdl:message>
+    <wsdl:message name="DBTransactionContextOutputCollection_msg">
+        <wsdl:part name="DBTransactionContextOutputCollection" element="db:DBTransactionContextOutputCollection"/>
+    </wsdl:message>
+    <wsdl:portType name="DBTransactionContext_ptt">
+        <wsdl:operation name="DBTransactionContext">
+            <wsdl:input message="tns:DBTransactionContextInput_msg"/>
+            <wsdl:output message="tns:DBTransactionContextOutputCollection_msg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns="http://rubiconred.com/ckbk/svc/ParcelTrackerService" 
+	xmlns:odr="http://rubiconred.com/ckbk/xsd/order" 
+	targetNamespace="http://rubiconred.com/ckbk/svc/ParcelTrackerService" 
+	elementFormDefault="qualified">
+	
+	<xsd:import namespace="http://rubiconred.com/ckbk/xsd/order" schemaLocation="xsd/Order_1.0.xsd"/>
+	
+	<xsd:element name="syncParcelLocation" type="SyncParcelLocation"/>
+	<xsd:complexType name="SyncParcelLocation">
+		<xsd:sequence>
+			<xsd:element ref="odr:orderNo"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

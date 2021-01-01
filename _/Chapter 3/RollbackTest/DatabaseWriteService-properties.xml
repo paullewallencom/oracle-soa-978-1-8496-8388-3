@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+   <entry key="TEST_TABLE:db_column_0">ID</entry>
+   <entry key="TEST_TABLE.TXID:db_column_size">30</entry>
+   <entry key="TEST_TABLE.ID:db_column_precision">0</entry>
+   <entry key="TEST_TABLE:db_table_type">TABLE</entry>
+   <entry key="TEST_TABLE.ID:db_column_not_null">true</entry>
+   <entry key="TEST_TABLE.REMARKS:db_column_type">VARCHAR2</entry>
+   <entry key="TEST_TABLE.REMARKS:db_column_not_null">false</entry>
+   <entry key="TEST_TABLE.INSERTIONDATE:db_column_type">DATE</entry>
+   <entry key="TEST_TABLE.ID:db_column_type">NUMBER</entry>
+   <entry key="TEST_TABLE.TXID:db_column_type">VARCHAR2</entry>
+   <entry key="TEST_TABLE.INSERTIONDATE:db_column_not_null">false</entry>
+   <entry key="root_descriptor_alias">TEST_TABLE</entry>
+   <entry key="TEST_TABLE:db_column_3">INSERTIONDATE</entry>
+   <entry key="TEST_TABLE.TXID:db_column_not_null">false</entry>
+   <entry key="TEST_TABLE.REMARKS:db_column_size">20</entry>
+   <entry key="TEST_TABLE:db_column_2">REMARKS</entry>
+   <entry key="TEST_TABLE:db_column_1">TXID</entry>
+</properties>

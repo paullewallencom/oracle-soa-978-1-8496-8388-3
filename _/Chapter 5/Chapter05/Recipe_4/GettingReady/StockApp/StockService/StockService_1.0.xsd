@@ -1,0 +1,12 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema targetNamespace="http://rubiconred.com/ckbk/svc/StockService" elementFormDefault="qualified"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rubiconred.com/ckbk/svc/StockService"
+     xmlns:bse="http://rubiconred.com/ckbk/xsd/base" xmlns:cmn="http://rubiconred.com/ckbk/xsd/common"
+     xmlns:bk="http://rubiconred.com/ckbk/xsd/book">
+    <xsd:element name="checkInventory" type="CheckInventory"/>
+    <xsd:complexType name="CheckInventory">
+        <xsd:sequence>
+            <xsd:element name="warehouseId" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

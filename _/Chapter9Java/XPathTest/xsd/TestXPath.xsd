@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://soa.cookbook.xpath"
+            targetNamespace="http://soa.cookbook.xpath"
+            elementFormDefault="qualified">
+  <xsd:element name="Request">
+    <xsd:annotation>
+      <xsd:documentation>
+        A sample element
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Data" type="xsd:double" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="Response">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="Request"/>
+        <xsd:element name="XsltStdDev" type="xsd:double"/>
+        <xsd:element name="BpelStdDev" type="xsd:double"/>
+        <xsd:element name="MediatorStdDev" type="xsd:double"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

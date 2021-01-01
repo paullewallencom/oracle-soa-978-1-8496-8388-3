@@ -1,0 +1,35 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema targetNamespace="http://rubiconred.com/ckbk/xsd/book" elementFormDefault="qualified"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:bse="http://rubiconred.com/ckbk/xsd/base"
+     xmlns="http://rubiconred.com/ckbk/xsd/book">
+    <xsd:import namespace="http://rubiconred.com/ckbk/xsd/base" schemaLocation="Base_1.0.xsd"/>
+    <xsd:element name="bookOrderList" type="BookOrderList"/>
+    <xsd:element name="bookOrder" type="BookOrder"/>
+    <xsd:element name="isbn" type="ISBN-13"/>
+    <xsd:element name="book" type="Book"/>
+    <xsd:simpleType name="ISBN-13">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\d{13}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="Book">
+        <xsd:sequence>
+            <xsd:element name="isbn" type="ISBN-13"/>
+            <xsd:element name="title" type="xsd:string"/>
+            <xsd:element name="description" type="xsd:string"/>
+            <xsd:element name="publisher" type="xsd:string"/>
+            <xsd:element name="author" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="BookOrderList">
+        <xsd:sequence>
+            <xsd:element name="bookOrder" type="BookOrder" minOccurs="1" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="BookOrder">
+        <xsd:sequence>
+            <xsd:element name="isbn" type="ISBN-13"/>
+            <xsd:element name="quantity" type="xsd:integer"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

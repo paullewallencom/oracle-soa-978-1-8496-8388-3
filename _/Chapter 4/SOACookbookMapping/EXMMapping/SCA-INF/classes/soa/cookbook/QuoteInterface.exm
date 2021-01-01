@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<java-wsdl-mapping xmlns="http://xmlns.oracle.com/weblogic/weblogic-wsee-databinding">
+  <xml-schema-mapping>
+    <!-- Use specific JAXB mapping for classes in given java package -->
+    <toplink-oxm-file file-path="./mappings.xml" java-package="soa.cookbook"/>
+  </xml-schema-mapping>
+  <!-- Set target namespace for WSDL -->
+  <!--
+  <web-service target-namespace="http://cookbook.soa.mapping/wsdl" />
+  -->
+  <!-- Control specific operations -->
+  <java-methods>
+    <java-method name="getQuotes">
+      <!-- Set name response element (default is return) -->
+      <web-result name="response"/>
+      <java-params>
+        <java-param java-type="soa.cookbook.QuoteRequest">
+          <!-- Set name of corresponding request element (default is arg0 arg1 etc) -->
+          <web-param name="request"/>
+        </java-param>
+      </java-params>
+    </java-method>
+  </java-methods>
+</java-wsdl-mapping>

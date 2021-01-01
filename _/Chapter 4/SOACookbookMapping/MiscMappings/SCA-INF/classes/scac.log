@@ -1,0 +1,26 @@
+Sep 24, 2011 2:10:51 PM oracle.fabric.common.wsdl.SchemaManager isIncrementalBuildSupported
+INFO: XMLSchema incremental build enabled.
+Sep 24, 2011 2:10:51 PM com.collaxa.cube.CubeLogger info
+INFO: validating "MappingBPELProcess.bpel" ...
+oracle.jrf.UnknownPlatformException: JRF is unable to determine the current application server platform.
+	at oracle.jrf.ServerPlatformSupportFactory.getInstance(ServerPlatformSupportFactory.java:79)
+	at oracle.integration.platform.blocks.WLSPlatformConfigurationProvider.<clinit>(WLSPlatformConfigurationProvider.java:44)
+	at oracle.integration.platform.blocks.FabricConfigManager.<clinit>(FabricConfigManager.java:155)
+	at oracle.integration.platform.blocks.xpath.FabricXPathFunctionResolver.loadXpathFunctions(FabricXPathFunctionResolver.java:271)
+	at oracle.integration.platform.blocks.xpath.FabricXPathFunctionResolver.loadXPathConfigFile(FabricXPathFunctionResolver.java:153)
+	at oracle.integration.platform.blocks.xpath.FabricXPathFunctionResolver.init(FabricXPathFunctionResolver.java:51)
+	at com.collaxa.cube.xml.xpath.BPELXPathFunctionNameResolver.loadFabricXpathFunctions(BPELXPathFunctionNameResolver.java:57)
+	at com.collaxa.cube.xml.xpath.BPELXPathFunctionNameResolver.<init>(BPELXPathFunctionNameResolver.java:48)
+	at com.collaxa.cube.xml.xpath.BPELXPathFunctionNameResolver.<clinit>(BPELXPathFunctionNameResolver.java:44)
+	at com.collaxa.cube.lang.compiler.bpel.XPathExprValidatorVisitor.<init>(XPathExprValidatorVisitor.java:122)
+	at com.collaxa.cube.lang.compiler.bpel.AssignValidator.<init>(AssignValidator.java:89)
+	at com.collaxa.cube.lang.compiler.bpel.BpelParser.<init>(BpelParser.java:452)
+	at com.collaxa.cube.lang.compiler.bpel.BPELValidator.validate(BPELValidator.java:60)
+	at com.collaxa.cube.lang.compiler.BPEL1Processor.validate(BPEL1Processor.java:329)
+	at com.collaxa.cube.lang.compiler.BPEL1Processor.process(BPEL1Processor.java:153)
+	at com.collaxa.cube.lang.compiler.CubeParserHelper.compile(CubeParserHelper.java:47)
+	at oracle.fabric.bpel.bpelc.BPELComponentValidator.validate(BPELComponentValidator.java:40)
+	at oracle.soa.scac.ValidateComposite.validateComponentTypeServicesReferences(ValidateComposite.java:1117)
+	at oracle.soa.scac.ValidateComposite.doValidation(ValidateComposite.java:500)
+	at oracle.soa.scac.ValidateComposite.run(ValidateComposite.java:150)
+	at oracle.soa.scac.ValidateComposite.main(ValidateComposite.java:135)

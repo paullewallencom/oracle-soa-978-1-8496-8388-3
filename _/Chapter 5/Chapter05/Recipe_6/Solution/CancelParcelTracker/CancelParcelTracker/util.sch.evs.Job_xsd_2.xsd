@@ -1,0 +1,146 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema xmlns="http://rubiconred.com/evs/util.sch.Job" xmlns:job="http://rubiconred.com/ebo/util.sch.Job"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://rubiconred.com/evs/util.sch.Job"
+     version="1.0">
+    <xsd:import namespace="http://rubiconred.com/ebo/util.sch.Job" schemaLocation="util.sch.evs.Job_xsd_1.xsd"/>
+    <xsd:element name="getJob" type="GetJobType"/>
+    <xsd:element name="getJobResponse" type="GetJobResponseType"/>
+    <xsd:element name="putJob" type="PutJobType"/>
+    <xsd:element name="putJobResponse" type="PutJobResponseType"/>
+    <xsd:element name="removeJob" type="RemoveJobType"/>
+    <xsd:element name="removeJobResponse" type="RemoveJobResponseType"/>
+    <xsd:element name="queryJobs" type="QueryJobsType"/>
+    <xsd:element name="queryJobsResponse" type="QueryJobsResponseType"/>
+    <xsd:element name="getAllJobs" type="GetAllJobsType"/>
+    <xsd:element name="getAllJobsResponse" type="GetAllJobsResponseType"/>
+    <xsd:element name="jobFault" type="JobFaultType"/>
+    <xsd:complexType name="GetJobType">
+        <xsd:sequence>
+            <xsd:element name="body">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="job:jobId"/>
+                        <xsd:element ref="job:jobGroup"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute default="1.0" name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="GetJobResponseType">
+        <xsd:sequence>
+            <xsd:element name="body">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="job:job"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute default="1.0" name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="PutJobType">
+        <xsd:sequence>
+            <xsd:element name="body">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="job:job"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute default="1.0" name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="PutJobResponseType">
+        <xsd:sequence>
+            <xsd:element name="body">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="job:jobId"/>
+                        <xsd:element ref="job:jobGroup"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute default="1.0" name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="RemoveJobType">
+        <xsd:sequence>
+            <xsd:element name="body">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="job:jobId"/>
+                        <xsd:element ref="job:jobGroup"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute default="1.0" name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="RemoveJobResponseType">
+        <xsd:sequence>
+            <xsd:element name="body">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="job:jobId"/>
+                        <xsd:element ref="job:jobGroup"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute default="1.0" name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="QueryJobsType">
+        <xsd:sequence>
+            <xsd:element name="body">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" ref="job:jobGroup"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute default="1.0" name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="QueryJobsResponseType">
+        <xsd:sequence>
+            <xsd:element name="body">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="job:jobSet"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute default="1.0" name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="GetAllJobsType">
+        <xsd:sequence>
+            <xsd:element name="body">
+                <xsd:complexType/>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute default="1.0" name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="GetAllJobsResponseType">
+        <xsd:sequence>
+            <xsd:element name="body">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="job:jobSet"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute default="1.0" name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="JobFaultType">
+        <xsd:sequence>
+            <xsd:element name="errorCode" type="xsd:string"/>
+            <xsd:element name="description" type="xsd:string"/>
+            <xsd:element name="details" type="xsd:anyType"/>
+            <xsd:element name="timestamp" type="xsd:dateTime"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>
+<!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Oracle JAX-WS 2.1.5. -->

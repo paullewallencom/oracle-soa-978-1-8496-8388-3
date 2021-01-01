@@ -1,0 +1,114 @@
+<xsd:schema targetNamespace="http://rubiconred.com/ckbk/xsd/account" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rubiconred.com/ckbk/xsd/account" xmlns:bse="http://rubiconred.com/ckbk/xsd/base">
+
+	<xsd:import namespace="http://rubiconred.com/ckbk/xsd/base" schemaLocation="Base_v1_0.xsd"/>
+    
+    <xsd:element name="account" type="tAccount"/>
+    <xsd:element name="accountBalance" type="bse:tAmount"/>
+    <xsd:element name="accountDetail" type="tAccountDetail"/>
+    <xsd:element name="accountStatus" type="tAccountStatus"/>
+    <xsd:element name="accountType" type="tAccountType"/>
+    <xsd:element name="accountId" type="bse:tIdentifier"/>
+    <xsd:element name="clientType" type="tClientType"/>
+    <xsd:element name="clientId" type="bse:tIdentifier"/>
+    <xsd:element name="currency" type="bse:tCurrencyCode"/>
+    <xsd:element name="tnDate" type="xsd:date"/>
+    <xsd:element name="trnDesc" type="xsd:string"/>
+    <xsd:element name="trnId" type="bse:tIdentifier"/>
+    <xsd:element name="trnType" type="tTransactionType"/>
+    <xsd:element name="trnAmount" type="bse:tAmount"/>
+    <xsd:element name="trnList" type="tAccountTransactionList"/>
+    <xsd:element name="maxAmount" type="bse:tAmount"/>
+    <xsd:element name="minAmount" type="bse:tAmount"/>   
+    
+    <xsd:complexType name="tAccount"> 
+        <xsd:sequence>
+            <xsd:element ref="accountId"/>
+            <xsd:element ref="accountDetail"/>
+            <xsd:element ref="accountBalance"/>
+            <xsd:element name="trnList" type="tAccountTransactionList"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+	<xsd:simpleType name="tAmount">
+		<xsd:restriction base="xsd:decimal">
+			<xsd:totalDigits value="10"/>
+			<xsd:fractionDigits value="2"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+    <xsd:complexType name="tAccountDetail"> 
+        <xsd:sequence>
+            <xsd:element ref="accountType"/>
+            <xsd:element ref="accountStatus"/>
+            <xsd:element ref="clientId"/>
+            <xsd:element ref="clientType"/>
+            <xsd:element ref="currency"/>            
+            <xsd:element name="description" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="tAccountTransactionList"> 
+        <xsd:sequence>
+            <xsd:element name="trn" type="tAccountTransaction" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="tAccountTransaction"> 
+        <xsd:sequence>
+            <xsd:element ref="trnId"/>
+            <xsd:element ref="tnDate"/>
+            <xsd:element ref="trnType"/>     <!-- Credit or Debit -->
+            <xsd:element ref="trnAmount"/>
+            <xsd:element ref="trnDesc"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="tAccountType">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="3"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="tAccountId">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+            <xsd:minLength value="8"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="tAccountStatus">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+            <xsd:minLength value="3"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="tClientId">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+            <xsd:minLength value="8"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="tClientType">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="3"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="tTransactionId">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+            <xsd:minLength value="8"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="tTransactionType">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Credit"/> 
+          <xsd:enumeration value="Debit"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+ 
+</xsd:schema>

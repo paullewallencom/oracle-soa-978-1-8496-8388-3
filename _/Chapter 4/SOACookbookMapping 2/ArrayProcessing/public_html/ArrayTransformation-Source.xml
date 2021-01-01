@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<quotes xmlns="http://xmlns.oracle.com/SOACookbookMapping/ArrayProcessing/ArrayProcess">
+   <productQuote>
+      <productName>Revell B17G Flying Fortress 1:48 Scale</productName>
+      <vendors>
+         <vendorQuote>
+            <vendorName>Mighty Models</vendorName>
+            <price>35</price>
+         </vendorQuote>
+         <vendorQuote>
+            <vendorName>Miniature Miracles</vendorName>
+            <price>40</price>
+         </vendorQuote>
+         <vendorQuote>
+            <vendorName>Plastic Paradise</vendorName>
+            <price>34</price>
+         </vendorQuote>
+      </vendors>
+   </productQuote>
+   <productQuote>
+      <productName>Monogram B29 Superfortress 1:48</productName>
+      <vendors>
+         <vendorQuote>
+            <vendorName>Flights of Fancy</vendorName>
+            <price>40</price>
+         </vendorQuote>
+         <vendorQuote>
+            <vendorName>Plastic Paradise</vendorName>
+            <price>43</price>
+         </vendorQuote>
+         <vendorQuote>
+            <vendorName>Hometown Hobbies</vendorName>
+            <price>49</price>
+         </vendorQuote>
+      </vendors>
+   </productQuote>
+   <productQuote>
+      <productName>Airfix Avro Lancaster 1:72</productName>
+      <vendors>
+         <vendorQuote>
+            <vendorName>Mighty Models</vendorName>
+            <price>43</price>
+         </vendorQuote>
+         <vendorQuote>
+            <vendorName>Flights of Fancy</vendorName>
+            <price>48</price>
+         </vendorQuote>
+         <vendorQuote>
+            <vendorName>Plastic Paradise</vendorName>
+            <price>36</price>
+         </vendorQuote>
+      </vendors>
+   </productQuote>
+</quotes>

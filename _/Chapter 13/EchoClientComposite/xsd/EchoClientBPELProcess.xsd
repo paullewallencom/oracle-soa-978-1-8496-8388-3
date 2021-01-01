@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+        targetNamespace="http://xmlns.oracle.com/SOACookbookManagement/EchoClientComposite/EchoClientBPELProcess"
+        xmlns="http://www.w3.org/2001/XMLSchema">
+ <element name="process">
+  <complexType>
+   <sequence>
+    <element name="iterations" type="int"/>
+   </sequence>
+  </complexType>
+ </element>
+ <element name="processResponse">
+  <complexType>
+   <sequence>
+    <element name="iterations" type="int"/>
+    <element name="LocalHostTime" type="duration"/>
+    <element name="NamedHostTime" type="duration"/>
+    <element name="LocalDirectTime" type="duration"/>
+   </sequence>
+  </complexType>
+ </element>
+ <element name="timing">
+  <complexType>
+   <sequence>
+    <element name="startTime" type="dateTime"/>
+    <element name="endTime" type="dateTime"/>
+    <element name="elapsedTime" type="duration"/>
+   </sequence>
+  </complexType>
+ </element>
+</schema>

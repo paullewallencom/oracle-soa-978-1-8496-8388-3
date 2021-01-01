@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://rubiconred.com/ckbk/xsd/common" elementFormDefault="qualified" 
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns="http://rubiconred.com/ckbk/xsd/common">
+
+    <xsd:element name="address" type="tAddress"/>
+    <xsd:element name="creditCard" type="tCreditCard"/>
+    <xsd:element name="dob" type="xsd:date"/>
+    <xsd:element name="emailAddress" type="tEmailAddress"/>  
+    <xsd:element name="emailAddressToken" type="xsd:string"/>
+    <xsd:element name="name" type="tName"/> 
+    <xsd:element name="cardNumber" type="tCardNumber"/>
+    <xsd:element name="cardAuthCode" type="xsd:string"/>
+        
+    <xsd:complexType name="tAddress">
+        <xsd:sequence>
+            <xsd:element name="addressLine1" type="xsd:string"/>
+            <xsd:element name="addressLine2" type="xsd:string"/> 
+            <xsd:element name="city" type="xsd:string"/>       
+            <xsd:element name="state" type="xsd:string"/>
+            <xsd:element name="zip" type="xsd:string"/>   
+            <xsd:element name="country" type="xsd:string"/>   
+        </xsd:sequence>
+    </xsd:complexType> 
+
+    <xsd:simpleType name="tEmailAddress">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="64"/>
+            <xsd:minLength value="8"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="tName">
+        <xsd:sequence>
+            <xsd:element name="title" type="xsd:string"/> 
+            <xsd:element name="forename" type="xsd:string"/>       
+            <xsd:element name="surname" type="xsd:string"/>   
+        </xsd:sequence>
+    </xsd:complexType> 
+    
+    <xsd:complexType name="tCreditCard">
+        <xsd:sequence>
+            <xsd:element name="cardType" type="xsd:string"/>   
+            <xsd:element name="cardHolderName" type="tCardHolderName"/>
+            <xsd:element name="cardNumber" type="tCardNumber"/> 
+            <xsd:element name="expiryMonth" type="tExpiryMonth"/>
+            <xsd:element name="expiryYear" type="tExpiryYear"/>
+            <xsd:element name="securityNo" type="tSecurityNo"/>        
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:simpleType name="tCardHolderName">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="32"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="tCardNumber">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9]{16}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="tExpiryMonth">
+        <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="1"/>
+            <xsd:maxInclusive value="12"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="tExpiryYear">
+        <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="1970"/>
+            <xsd:maxInclusive value="9999"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="tSecurityNo">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="4"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+</xsd:schema>

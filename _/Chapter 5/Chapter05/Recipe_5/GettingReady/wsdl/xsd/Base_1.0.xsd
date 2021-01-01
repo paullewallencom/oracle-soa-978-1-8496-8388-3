@@ -1,0 +1,42 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema targetNamespace="http://rubiconred.com/ckbk/xsd/base" elementFormDefault="qualified"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rubiconred.com/ckbk/xsd/base">
+    <xsd:simpleType name="Amount">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:totalDigits value="10"/>
+            <xsd:fractionDigits value="2"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Duration">
+        <xsd:restriction base="xsd:duration">
+            <xsd:pattern value="P[0-9]{1,3}D"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Identifier">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+            <xsd:minLength value="6"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Status">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="32"/>
+            <xsd:minLength value="3"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="CurrencyCode">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="AUD"/>
+            <xsd:enumeration value="BRL"/>
+            <xsd:enumeration value="CAD"/>
+            <xsd:enumeration value="CNY"/>
+            <xsd:enumeration value="EUR"/>
+            <xsd:enumeration value="GBP"/>
+            <xsd:enumeration value="INR"/>
+            <xsd:enumeration value="JPY"/>
+            <xsd:enumeration value="RUR"/>
+            <xsd:enumeration value="USD"/>
+            <xsd:length value="3"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

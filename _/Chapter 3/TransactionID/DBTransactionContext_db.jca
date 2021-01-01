@@ -1,0 +1,13 @@
+<adapter-config name="DBTransactionContext" adapter="Database Adapter" wsdlLocation="DBTransactionContext.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/DB/Test" UIConnectionName="SOAVBOX_TEST" adapterRef=""/>
+  <endpoint-interaction portType="DBTransactionContext_ptt" operation="DBTransactionContext">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select dbms_transaction.local_transaction_id from dual"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+    <input/>
+    <output/>
+  </endpoint-interaction>
+
+</adapter-config>

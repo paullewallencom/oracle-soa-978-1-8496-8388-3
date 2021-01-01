@@ -1,0 +1,33 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tran="http://soa.cookbook/Transactions"
+     targetNamespace="http://soa.cookbook/Transactions" elementFormDefault="qualified">
+    <xsd:element name="TransactionRequest" type="tran:TransactionRequestType"/>
+    <xsd:element name="TransactionResponse" type="tran:TransactionResponseType"/>
+    <xsd:element name="TransactionResponsePair" type="tran:TransactionResponsePairType"/>
+    <xsd:complexType name="TransactionRequestType">
+        <xsd:annotation>
+            <xsd:documentation>Request Element for Transaction ID Inquiries</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="JavaRequired" type="xsd:boolean"/>
+            <xsd:element name="DBRequired" type="xsd:boolean"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="TransactionResponseType">
+        <xsd:annotation>
+            <xsd:documentation>Response Element for Transaction ID Responses</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="JavaGlobalTXID" type="xsd:string"/>
+            <xsd:element name="JavaTXIDFormat" type="xsd:string"/>
+            <xsd:element name="JavaBranchID" type="xsd:string"/>
+            <xsd:element name="DBTXID" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="TransactionResponsePairType">
+        <xsd:sequence>
+            <xsd:element name="preCall" type="tran:TransactionResponseType"/>
+            <xsd:element name="postCall" type="tran:TransactionResponseType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

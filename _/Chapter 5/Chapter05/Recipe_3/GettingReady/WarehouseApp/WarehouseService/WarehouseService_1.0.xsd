@@ -1,0 +1,16 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema targetNamespace="http://rubiconred.com/ckbk/svc/WarehouseService" elementFormDefault="qualified"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rubiconred.com/ckbk/svc/WarehouseService"
+     xmlns:bse="http://rubiconred.com/ckbk/xsd/base" xmlns:cmn="http://rubiconred.com/ckbk/xsd/common"
+     xmlns:bk="http://rubiconred.com/ckbk/xsd/book">
+    <xsd:import namespace="http://rubiconred.com/ckbk/xsd/base" schemaLocation="Base_1.0.xsd"/>
+    <xsd:import namespace="http://rubiconred.com/ckbk/xsd/common" schemaLocation="Common_1.0.xsd"/>
+    <xsd:import namespace="http://rubiconred.com/ckbk/xsd/book" schemaLocation="Book_1.0.xsd"/>
+    <xsd:element name="submitBookOrder" type="SubmitBookOrder"/>
+    <xsd:complexType name="SubmitBookOrder">
+        <xsd:sequence>
+            <xsd:element name="publisher" type="xsd:string"/>
+            <xsd:element ref="bk:bookOrder"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

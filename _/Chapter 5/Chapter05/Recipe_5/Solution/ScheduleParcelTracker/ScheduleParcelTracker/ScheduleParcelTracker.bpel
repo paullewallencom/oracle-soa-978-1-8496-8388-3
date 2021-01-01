@@ -1,0 +1,155 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Sep 16 16:20:14 EST 2012
+  Author:  matt.wright
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ScheduleParcelTracker"
+               targetNamespace="http://xmlns.oracle.com/ScheduleParcelTracker/ScheduleParcelTracker/ScheduleParcelTracker"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/ScheduleParcelTracker/ScheduleParcelTracker/ScheduleParcelTracker"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://rubiconred.com/ckbk/svc/ParcelTrackerService"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns2="http://rubiconred.com/evs/util.sch.Job"
+         xmlns:ns4="http://rubiconred.com/ckbk/xsd/order"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns3="http://rubiconred.com/ebo/util.sch.Job"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="scheduleparceltracker_client" partnerLinkType="ns1:ScheduleParcelTracker" myRole="ParcelTrackerService"/>
+    <partnerLink name="Scheduler" partnerLinkType="ns2:Scheduler"
+                 partnerRole="util.sch.evs.Job"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:syncParcelLocation"/>
+    <variable name="putJobInput" messageType="ns2:putJob"/>
+    <variable name="putJobOutput" messageType="ns2:putJobResponse"/>
+    <variable name="syncParcelLocation" messageType="ns1:syncParcelLocation"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ScheduleParcelTracker.wsdl) -->
+    <receive name="receiveInput" partnerLink="scheduleparceltracker_client" portType="ns1:ParcelTrackerService" operation="syncParcelLocation" variable="inputVariable" createInstance="yes"/>
+    <assign name="setPutJob">
+      <copy>
+        <from>$inputVariable.payload/ns4:orderNo</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobId</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/ns4:orderNo</from>
+        <to>$syncParcelLocation.payload/ns4:orderNo</to>
+      </copy>
+      <copy>
+        <from>'ParcelTracker'</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobGroup</to>
+      </copy>
+      <copy>
+        <from>concat('A job managing the tracking of order no: ', $inputVariable.payload/ns4:orderNo)</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDescription</to>
+      </copy>
+      <copy>
+        <from>xp20:current-date()</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:startDate</to>
+      </copy>
+      <copy>
+        <from>substring(xp20:add-dayTimeDuration-to-dateTime(xp20:current-date(), 'P14D'),1,10)</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:endDate</to>
+      </copy>
+      <copy>
+        <from>true()</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:active</to>
+      </copy>
+      <copy>
+        <from>'0/15 * * * * ?'</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/ns3:cronSchedule</to>
+      </copy>
+      <copy>
+        <from>'WebService'</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/@jobClass</to>
+      </copy>
+      <copy>
+        <from>'One-Way'</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/ns3:webServiceJobDefinition/@responseInterface</to>
+      </copy>
+      <copy>
+        <from>'http://rubiconred.com/ckbk/svc/ParcelTrackerService'</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/ns3:webServiceJobDefinition/ns3:service/ns3:URI</to>
+      </copy>
+      <copy>
+        <from>'parceltrackerservice_client'</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/ns3:webServiceJobDefinition/ns3:service/ns3:localName</to>
+      </copy>
+      <copy>
+        <from>'http://rubiconred.com/ckbk/svc/ParcelTrackerService'</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/ns3:webServiceJobDefinition/ns3:port/ns3:URI</to>
+      </copy>
+      <copy>
+        <from>'ParcelTrackerService_pt'</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/ns3:webServiceJobDefinition/ns3:port/ns3:localName</to>
+      </copy>
+      <copy>
+        <from>'http://localhost:7001/soa-infra/services/default/ParcelTracker/parceltrackerservice_client'</from>
+        <to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/ns3:webServiceJobDefinition/ns3:endpointAddress</to>
+      </copy>
+      <extensionAssignOperation>
+        <bpelx:append>
+          <bpelx:from>$syncParcelLocation.payload</bpelx:from>
+          <bpelx:to>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/ns3:webServiceJobDefinition/ns3:soapRequestBody</bpelx:to>
+        </bpelx:append>
+        <bpelx:remove>
+          <bpelx:target>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/ns3:simpleSchedule</bpelx:target>
+        </bpelx:remove>
+        <bpelx:remove>
+          <bpelx:target>$putJobInput.payload/ns2:body/ns3:job/ns3:jobDefinition/ns3:ednJobDefinition</bpelx:target>
+        </bpelx:remove>
+      </extensionAssignOperation>
+    </assign>
+    <invoke name="putJob" partnerLink="Scheduler"
+            portType="ns2:util.sch.evs.Job" operation="putJob"
+            inputVariable="putJobInput" bpelx:invokeAsDetail="no"
+            outputVariable="putJobOutput"/>
+  </sequence>
+</process>

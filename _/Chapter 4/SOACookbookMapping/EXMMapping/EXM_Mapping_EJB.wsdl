@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="EXM_Mapping_EJB"
+     targetNamespace="http://cookbook.soa/"
+     xmlns:tns="http://cookbook.soa/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+     xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+     xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    >
+    <wsdl:types>
+        <xsd:schema xmlns:ns0="http://cookbook.soa.mapping/javatypes" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             targetNamespace="http://cookbook.soa.mapping/javatypes" elementFormDefault="qualified">
+            <xsd:complexType name="quote">
+                <xsd:sequence>
+                    <xsd:element name="product" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="vendors" minOccurs="0">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:choice maxOccurs="unbounded">
+                                    <xsd:element name="hwVendorQuote" type="ns0:hardwareVendorQuote" minOccurs="0"/>
+                                    <xsd:element name="svcVendorQuote" type="ns0:serviceVendorQuote"
+                                         minOccurs="0"/>
+                                </xsd:choice>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="serviceVendorQuote">
+                <xsd:complexContent>
+                    <xsd:extension base="ns0:vendorQuote">
+                        <xsd:sequence>
+                            <xsd:element name="items" type="ns0:serviceItem" minOccurs="0" maxOccurs="unbounded"/>
+                        </xsd:sequence>
+                    </xsd:extension>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="quoteRequest">
+                <xsd:sequence>
+                    <xsd:element name="products" minOccurs="0">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="product" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="requiredDate" type="xsd:dateTime" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="serviceItem">
+                <xsd:all>
+                    <xsd:element name="details" type="xsd:string"/>
+                    <xsd:element name="price" type="xsd:decimal"/>
+                    <xsd:element name="service" type="xsd:string"/>
+                </xsd:all>
+            </xsd:complexType>
+            <xsd:complexType name="vendorQuote" abstract="true">
+                <xsd:sequence>
+                    <xsd:element name="price" type="xsd:decimal" minOccurs="0"/>
+                    <xsd:element name="vendor" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="hardwareItem">
+                <xsd:sequence>
+                    <xsd:element name="item" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="airTransportable" type="xsd:boolean"/>
+                    <xsd:element name="price" type="xsd:decimal" minOccurs="0"/>
+                    <xsd:element name="quantity" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="hardwareVendorQuote">
+                <xsd:complexContent>
+                    <xsd:extension base="ns0:vendorQuote">
+                        <xsd:sequence>
+                            <xsd:element name="items" type="ns0:hardwareItem" minOccurs="0" maxOccurs="unbounded"/>
+                        </xsd:sequence>
+                    </xsd:extension>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="quoteResponse">
+                <xsd:sequence>
+                    <xsd:element name="quotes" type="ns0:quote" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="QuoteRequest" type="ns0:quoteRequest"/>
+            <xsd:element name="QuoteResponse" type="ns0:quoteResponse"/>
+        </xsd:schema>
+        <xsd:schema targetNamespace="http://cookbook.soa/" xmlns:tns="http://cookbook.soa/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:ns1="http://cookbook.soa.mapping/javatypes">
+            <xsd:import namespace="http://cookbook.soa.mapping/javatypes"/>
+            <xsd:complexType name="getQuotes">
+                <xsd:sequence>
+                    <xsd:element name="request" type="ns1:quoteRequest"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getQuotes" type="tns:getQuotes"/>
+            <xsd:complexType name="getQuotesResponse">
+                <xsd:sequence>
+                    <xsd:element name="response" type="ns1:quoteResponse"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getQuotesResponse" type="tns:getQuotesResponse"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="getQuotesInput">
+        <wsdl:part name="parameters" element="tns:getQuotes"/>
+    </wsdl:message>
+    <wsdl:message name="getQuotesOutput">
+        <wsdl:part name="parameters" element="tns:getQuotesResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="EXM_Mapping_EJB">
+        <wsdl:operation name="getQuotes">
+            <wsdl:input message="tns:getQuotesInput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:output message="tns:getQuotesOutput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,11 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="properties"
+     targetNamespace="http://xmlns.oracle.com/WarehouseApp/WarehouseService/WarehouseService/correlationset"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <bpws:property name="isbn" type="xsd:string"/>
+</wsdl:definitions>

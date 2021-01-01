@@ -1,0 +1,128 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Aug 31 04:53:19 MDT 2011
+  Author:  axreynol
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ArrayProcess"
+               targetNamespace="http://xmlns.oracle.com/SOACookbookMapping/ArrayProcessing/ArrayProcess"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/SOACookbookMapping/ArrayProcessing/ArrayProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:blog="http://www.oracle.com/XSL/Transform/java/antony.blog.XPathImpl"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:stat="http://www.oracle.com/XSL/Transform/java/soa.cookbook.xpath.StdDev"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="arrayprocess_client" partnerLinkType="client:ArrayProcess" myRole="ArrayProcessProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:ArrayProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:ArrayProcessResponseMessage"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ArrayProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="arrayprocess_client" portType="client:ArrayProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+
+    <!-- Generate reply to synchronous request -->
+    <assign name="CreateResponseXForm">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/ArrayTransformation.xsl', $inputVariable.payload)"/>
+        <to variable="outputVariable" part="payload"/>
+      </copy>
+    </assign>
+    <scope name="Scope1">
+      <variables>
+        <variable name="CurrentIndex" type="xsd:integer"/>
+        <variable name="currentProduct" type="xsd:string"/>
+        <variable name="TotalProducts" type="xsd:integer"/>
+      </variables>
+      <sequence name="Sequence1">
+        <assign name="AssignLoopVar">
+          <copy>
+            <from expression="0"/>
+            <to variable="CurrentIndex"/>
+          </copy>
+          <copy>
+            <from expression="count(bpws:getVariableData('outputVariable','payload','/client:lowestQuotes/client:productLowestQuote'))"/>
+            <to variable="TotalProducts"/>
+          </copy>
+        </assign>
+        <while name="While1"
+               condition="bpws:getVariableData('CurrentIndex')&lt;bpws:getVariableData('TotalProducts')">
+          <assign name="AssignMaxCost">
+            <copy>
+              <from expression="bpws:getVariableData('CurrentIndex')+1"/>
+              <to variable="CurrentIndex"/>
+            </copy>
+            <copy>
+              <from expression="bpws:getVariableData('outputVariable','payload')/client:productLowestQuote[bpws:getVariableData('CurrentIndex')]/client:productName"/>
+              <to variable="currentProduct"/>
+            </copy>
+            <bpelx:insertAfter>
+              <bpelx:from><client:highestPrice xmlns:client="http://xmlns.oracle.com/SOACookbookMapping/ArrayProcessing/ArrayProcess"/></bpelx:from>
+              <bpelx:to variable="outputVariable" part="payload"
+                        query="/client:lowestQuotes/client:productLowestQuote[client:productName=bpws:getVariableData('currentProduct')]/client:lowestPrice"/>
+            </bpelx:insertAfter>
+            <copy>
+              <from expression="oraext:max-value-among-nodeset(bpws:getVariableData('outputVariable','payload')/client:productLowestQuote[client:productName=bpws:getVariableData('currentProduct')]/client:vendors/client:vendorQuote/client:price)"/>
+              <to variable="outputVariable" part="payload"
+                  query="/client:lowestQuotes/client:productLowestQuote[client:productName=bpws:getVariableData('currentProduct')]/client:highestPrice"/>
+            </copy>
+          </assign>
+        </while>
+      </sequence>
+    </scope>
+    <reply name="replyOutput" partnerLink="arrayprocess_client" portType="client:ArrayProcess" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

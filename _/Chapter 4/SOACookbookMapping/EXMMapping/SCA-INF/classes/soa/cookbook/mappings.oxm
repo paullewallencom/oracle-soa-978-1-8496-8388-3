@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xml-bindings xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/oxm">
+    <!-- Set target Namespace via namespace attribute -->
+    <xml-schema namespace="http://cookbook.soa.mapping/javatypes"
+                element-form-default="QUALIFIED"/>
+    <java-types>
+        <java-type name="soa.cookbook.HardwareItem">
+            <!-- Can specify order of sub-elements via prop-order attribute -->
+            <xml-type prop-order="item airTransportable price quantity"/>
+        </java-type>
+        <java-type name="soa.cookbook.VendorQuote">
+            <!-- Can override Namespace for individual elements via namespace attribute -->
+            <xml-type namespace="http://cookbook.soa.mapping/javatypes"/>
+        </java-type>
+        <java-type name="soa.cookbook.QuoteRequest">
+            <java-attributes>
+                <xml-element java-attribute="products" name="product">
+                    <!-- Can provide wrapper element for arrays and collections via xml-element-wrapper element -->
+                    <xml-element-wrapper name="products"/>
+                </xml-element>
+            </java-attributes>
+        </java-type>
+        <java-type name="soa.cookbook.Quote">
+            <!-- Workaround for a bug -->
+            <xml-see-also>soa.cookbook.HardwareVendorQuote
+                          soa.cookbook.ServiceVendorQuote</xml-see-also>
+            <java-attributes>
+                <xml-elements java-attribute="vendors">
+                    <!-- Can provide concrete classes for abstract classes via explicit type attribute in xml-element -->
+                    <xml-element type="soa.cookbook.HardwareVendorQuote"
+                                 name="hwVendorQuote"/>
+                    <xml-element type="soa.cookbook.ServiceVendorQuote"
+                                 name="svcVendorQuote"/>
+                    <xml-element-wrapper name="vendors"/>
+                </xml-elements>
+            </java-attributes>
+        </java-type>
+        <java-type name="soa.cookbook.QuoteRequest">
+            <java-attributes>
+                <!-- Can remove mappings by making them transient via xmnl-transient element -->
+                <xml-transient java-attribute="product"/>
+            </java-attributes>
+        </java-type>
+    </java-types>
+</xml-bindings>

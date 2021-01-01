@@ -1,0 +1,32 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="EchoClientBPELProcess"
+     targetNamespace="http://xmlns.oracle.com/SOACookbookManagement/EchoClientComposite/EchoClientBPELProcess"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:client="http://xmlns.oracle.com/SOACookbookManagement/EchoClientComposite/EchoClientBPELProcess"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="EchoClientBPELProcess">
+        <plnk:role name="EchoClientBPELProcessProvider" portType="client:EchoClientBPELProcess"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+             xmlns:client="http://xmlns.oracle.com/SOACookbookManagement/EchoClientComposite/EchoClientBPELProcess"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            <import namespace="http://xmlns.oracle.com/SOACookbookManagement/EchoClientComposite/EchoClientBPELProcess"
+                 schemaLocation="xsd/EchoClientBPELProcess.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="EchoClientBPELProcessRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="EchoClientBPELProcessResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="EchoClientBPELProcess">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:EchoClientBPELProcessRequestMessage"/>
+            <wsdl:output message="client:EchoClientBPELProcessResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,24 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://soa.cookbook/Employee" targetNamespace="http://soa.cookbook/Employee"
+     elementFormDefault="qualified">
+    <xsd:element name="Employee">
+        <xsd:annotation>
+            <xsd:documentation>A sample element</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Name" type="xsd:string"/>
+                <xsd:element name="EmployeeNumber" type="xsd:long"/>
+                <xsd:element name="Address">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Addr1" type="xsd:string"/>
+                            <xsd:element name="Addr2" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="Phone" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

@@ -1,0 +1,57 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<client:lowestQuotes xmlns:blog="http://www.oracle.com/XSL/Transform/java/antony.blog.XPathImpl" xmlns:stat="http://www.oracle.com/XSL/Transform/java/soa.cookbook.xpath.StdDev" xmlns:client="http://xmlns.oracle.com/SOACookbookMapping/ArrayProcessing/ArrayProcess">
+   <client:productLowestQuote>
+      <client:productName>Revell B17G Flying Fortress 1:48 Scale</client:productName>
+      <client:vendors>
+         <client:vendorQuote>
+            <client:vendorName>Plastic Paradise</client:vendorName>
+            <client:price>34</client:price>
+         </client:vendorQuote>
+         <client:vendorQuote>
+            <client:vendorName>Mighty Models</client:vendorName>
+            <client:price>35</client:price>
+         </client:vendorQuote>
+         <client:vendorQuote>
+            <client:vendorName>Miniature Miracles</client:vendorName>
+            <client:price>40</client:price>
+         </client:vendorQuote>
+      </client:vendors>
+      <client:lowestPrice>34</client:lowestPrice>
+   </client:productLowestQuote>
+   <client:productLowestQuote>
+      <client:productName>Monogram B29 Superfortress 1:48</client:productName>
+      <client:vendors>
+         <client:vendorQuote>
+            <client:vendorName>Flights of Fancy</client:vendorName>
+            <client:price>40</client:price>
+         </client:vendorQuote>
+         <client:vendorQuote>
+            <client:vendorName>Plastic Paradise</client:vendorName>
+            <client:price>43</client:price>
+         </client:vendorQuote>
+         <client:vendorQuote>
+            <client:vendorName>Hometown Hobbies</client:vendorName>
+            <client:price>49</client:price>
+         </client:vendorQuote>
+      </client:vendors>
+      <client:lowestPrice>40</client:lowestPrice>
+   </client:productLowestQuote>
+   <client:productLowestQuote>
+      <client:productName>Airfix Avro Lancaster 1:72</client:productName>
+      <client:vendors>
+         <client:vendorQuote>
+            <client:vendorName>Plastic Paradise</client:vendorName>
+            <client:price>36</client:price>
+         </client:vendorQuote>
+         <client:vendorQuote>
+            <client:vendorName>Mighty Models</client:vendorName>
+            <client:price>43</client:price>
+         </client:vendorQuote>
+         <client:vendorQuote>
+            <client:vendorName>Flights of Fancy</client:vendorName>
+            <client:price>48</client:price>
+         </client:vendorQuote>
+      </client:vendors>
+      <client:lowestPrice>36</client:lowestPrice>
+   </client:productLowestQuote>
+</client:lowestQuotes>

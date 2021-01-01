@@ -1,0 +1,82 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Dec 04 18:25:21 MST 2011
+  Author:  axreynol
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="EchoClientBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/SOACookbookSecurity/EchoClientApplication/EchoClientBPELProcess"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/SOACookbookSecurity/EchoClientApplication/EchoClientBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://xmlns.oracle.com/SOACookbookSecurity/EchoApplication/Echo"
+               xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="echoclientbpelprocess_client" partnerLinkType="ns1:Echo" myRole="EchoProvider"/>
+    <partnerLink name="EchoService" partnerLinkType="ns1:Echo"
+                 partnerRole="EchoProvider"/>
+    <partnerLink name="HTTPSecureEchoService" partnerLinkType="ns1:Echo"
+                 partnerRole="EchoProvider"/>
+    <partnerLink name="WSSSecureEchoService" partnerLinkType="ns1:Echo"
+                 partnerRole="EchoProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:requestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="ns1:replyMessage"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in EchoClientBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="echoclientbpelprocess_client" portType="ns1:echo_ptt" operation="echo" variable="inputVariable" createInstance="yes"/>
+
+    <invoke name="InvokeInsecure"
+            inputVariable="inputVariable" outputVariable="outputVariable"
+            partnerLink="EchoService" portType="ns1:echo_ptt" operation="echo"
+            bpelx:invokeAsDetail="no"/>
+    <invoke name="InvokeHTTPSecure"
+            inputVariable="inputVariable" outputVariable="outputVariable"
+            partnerLink="HTTPSecureEchoService" portType="ns1:echo_ptt" operation="echo"
+            bpelx:invokeAsDetail="no"/>
+    <invoke name="InvokeWSSSecureecure"
+            inputVariable="inputVariable" outputVariable="outputVariable"
+            partnerLink="WSSSecureEchoService" portType="ns1:echo_ptt" operation="echo"
+            bpelx:invokeAsDetail="no"/>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="echoclientbpelprocess_client" portType="ns1:echo_ptt" operation="echo" variable="outputVariable"/>
+  </sequence>
+</process>

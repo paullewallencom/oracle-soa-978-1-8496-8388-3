@@ -1,0 +1,30 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="TransactionIDService"
+     targetNamespace="http://oracle.com/sca/soapservice/SOACookbookTransaction/TransactionID/TransactionIDService"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:inp1="http://soa.cookbook/Transactions"
+     xmlns:tns="http://oracle.com/sca/soapservice/SOACookbookTransaction/TransactionID/TransactionIDService"
+    >
+    <plnk:partnerLinkType name="TransactionIDService">
+        <plnk:role name="TransactionIDServiceProvider" portType="tns:execute_ptt"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://soa.cookbook/Transactions" schemaLocation="xsd/TransactionID.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="requestMessage">
+        <wsdl:part name="request" element="inp1:TransactionRequest"/>
+    </wsdl:message>
+    <wsdl:message name="replyMessage">
+        <wsdl:part name="response" element="inp1:TransactionResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="execute_ptt">
+        <wsdl:operation name="getTransactionID">
+            <wsdl:input message="tns:requestMessage"/>
+            <wsdl:output message="tns:replyMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

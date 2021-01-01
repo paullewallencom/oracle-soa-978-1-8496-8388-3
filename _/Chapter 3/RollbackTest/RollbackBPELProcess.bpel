@@ -1,0 +1,108 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Jan 09 22:18:07 MST 2012
+  Author:  axreynol
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="RollbackBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/SOACookbookTransaction/RollbackTest/RollbackBPELProcess"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/SOACookbookTransaction/RollbackTest/RollbackBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/SOACookbookTransaction/RollbackTest/DatabaseWriteService"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:blog="http://www.oracle.com/XSL/Transform/java/antony.blog.XPathImpl"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/top/DatabaseWriteService"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:stat="http://www.oracle.com/XSL/Transform/java/soa.cookbook.xpath.StdDev"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="rollbackbpelprocess_client" partnerLinkType="client:RollbackBPELProcess" myRole="RollbackBPELProcessProvider"/>
+    <partnerLink name="DatabaseWriteService"
+                 partnerLinkType="ns1:DatabaseWriteService_plt"
+                 partnerRole="DatabaseWriteService_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:RollbackBPELProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:RollbackBPELProcessResponseMessage"/>
+    <variable name="InvokeDBWrite_insert_InputVariable"
+              messageType="ns1:TestTableCollection_msg"/>
+    <variable name="InvokeDBWrite_insert_OutputVariable"
+              messageType="ns1:TestTableCollection_msg"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in RollbackBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="rollbackbpelprocess_client" portType="client:RollbackBPELProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+
+    <!-- Generate reply to synchronous request -->
+    <assign name="AssignDBWrite">
+      <copy>
+        <from expression="xp20:current-dateTime()"/>
+        <to variable="InvokeDBWrite_insert_InputVariable"
+            part="TestTableCollection"
+            query="/ns2:TestTableCollection/ns2:TestTable/ns2:insertiondate"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="payload"
+              query="/client:process/client:remark"/>
+        <to variable="InvokeDBWrite_insert_InputVariable"
+            part="TestTableCollection"
+            query="/ns2:TestTableCollection/ns2:TestTable/ns2:remarks"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeDBWrite"
+            inputVariable="InvokeDBWrite_insert_InputVariable"
+            outputVariable="InvokeDBWrite_insert_OutputVariable"
+            partnerLink="DatabaseWriteService"
+            portType="ns1:DatabaseWriteService_ptt" operation="insert"
+            bpelx:invokeAsDetail="no"/>
+    <throw name="ThrowRollbackFault" faultName="bpelx:rollback"
+           bpelx:skipCondition="not(bpws:getVariableData('inputVariable','payload','/client:process/client:rollback')=string(true()))"/>
+    <reply name="replyOutput" partnerLink="rollbackbpelprocess_client" portType="client:RollbackBPELProcess" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

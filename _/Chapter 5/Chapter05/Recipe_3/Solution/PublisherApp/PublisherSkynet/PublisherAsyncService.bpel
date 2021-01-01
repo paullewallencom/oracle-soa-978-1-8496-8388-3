@@ -1,0 +1,117 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Sep 09 19:31:00 EST 2012
+  Author:  matt.wright
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="PublisherAsyncService"
+               targetNamespace="http://xmlns.oracle.com/PublisherApp/PublisherSkynet/PublisherAsyncService"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/PublisherApp/PublisherSkynet/PublisherAsyncService"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://rubiconred.com/ckbk/svc/PublisherAsyncService"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns2="http://rubiconred.com/ckbk/xsd/book"
+         xmlns:ns3="http://xmlns.oracle.com/PublisherApp/PublisherSkynet/PublisherAsyncService/correlationset">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="publisherasyncservice_client" partnerLinkType="ns1:PublisherAsyncService" myRole="PublisherAsyncService"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:submitBookOrder"/>
+    <variable name="processingComplete" type="xsd:boolean"/>
+    <variable name="waitUntil" type="xsd:dateTime"/>
+    <variable name="nextBookOrder" messageType="ns1:submitBookOrder"/>
+  </variables>
+  <correlationSets>
+    <correlationSet name="tokenCS" properties="ns3:token"/>
+  </correlationSets>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in PublisherAsyncService.wsdl) -->
+    <receive name="receiveInput" partnerLink="publisherasyncservice_client" portType="ns1:PublisherAsyncService" operation="submitBookOrder" variable="inputVariable" createInstance="yes">
+      <correlations>
+        <correlation set="tokenCS" initiate="yes"/>
+      </correlations>
+    </receive>
+    <assign name="Initalise">
+      <copy>
+        <from>false()</from>
+        <to>$processingComplete</to>
+      </copy>
+      <copy>
+        <from>xp20:add-dayTimeDuration-to-dateTime(concat($inputVariable.payload/ns1:token, ':00'), 'PT1M')</from>
+        <to>$waitUntil</to>
+      </copy>
+    </assign>
+    <while name="While1">
+      <condition>$processingComplete = false()</condition>
+      <sequence name="Sequence1">
+        <pick name="Pick1">
+          <onMessage variable="nextBookOrder"
+                     partnerLink="publisherasyncservice_client"
+                     portType="ns1:PublisherAsyncService"
+                     operation="submitBookOrder">
+            <correlations>
+              <correlation set="tokenCS" initiate="no"/>
+            </correlations>
+            <wait name="Wait">
+              <for>'PT10S'</for>
+            </wait>
+          </onMessage>
+          <onAlarm bpelx:name="WaitUntil">
+            <until>$waitUntil</until>
+            <assign name="processingComplete">
+              <copy>
+                <from>true()</from>
+                <to>$processingComplete</to>
+              </copy>
+            </assign>
+          </onAlarm>
+        </pick>
+      </sequence>
+    </while>
+  </sequence>
+</process>

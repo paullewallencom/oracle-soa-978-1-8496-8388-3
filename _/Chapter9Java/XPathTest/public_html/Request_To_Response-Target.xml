@@ -1,0 +1,15 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<inp1:Response xmlns:inp1="http://soa.cookbook.xpath">
+   <inp1:Request>
+      <inp1:Data>0.73</inp1:Data>
+      <inp1:Data>5.73</inp1:Data>
+      <inp1:Data>10.73</inp1:Data>
+      <inp1:Data>15.73</inp1:Data>
+      <inp1:Data>20.73</inp1:Data>
+      <inp1:Data>25.73</inp1:Data>
+      <inp1:Data>30.73</inp1:Data>
+      <inp1:Data>35.73</inp1:Data>
+      <inp1:Data>40.73</inp1:Data>
+   </inp1:Request>
+   <inp1:XsltStdDev>13.693063937629153</inp1:XsltStdDev>
+</inp1:Response>

@@ -1,0 +1,141 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sat Sep 24 11:08:38 MDT 2011
+  Author:  axreynol
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="MappingBPELProcess"
+         targetNamespace="http://xmlns.oracle.com/SOACookbookMapping/MiscMappings/MappingBPELProcess"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:client="http://xmlns.oracle.com/SOACookbookMapping/MiscMappings/MappingBPELProcess"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:blog="http://www.oracle.com/XSL/Transform/java/antony.blog.XPathImpl"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:stat="http://www.oracle.com/XSL/Transform/java/soa.cookbook.xpath.StdDev"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+  <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="MappingDemoService"
+                 partnerLinkType="client:MappingBPELProcess"
+                 myRole="MappingBPELProcessProvider"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:MappingBPELProcessRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:MappingBPELProcessResponseMessage"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in MappingBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="MappingDemoService"
+             portType="client:MappingBPELProcess" operation="process"
+             variable="inputVariable" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="InitialTransform">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/InitialTransformation.xsl', $inputVariable.payload)"/>
+        <to variable="outputVariable" part="payload"/>
+      </copy>
+    </assign>
+    <assign name="CorrectedInitialTransform">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/CorrectedInitialTransformation.xsl', $inputVariable.payload)"/>
+        <to variable="outputVariable" part="payload"/>
+      </copy>
+    </assign>
+    <scope name="AssignScope" variableAccessSerializable="no">
+      <faultHandlers>
+        <catch faultName="bpws:selectionFailure">
+          <assign name="CorrectedInitialAssign">
+            <copy bpelx:ignoreMissingFromData="yes"
+                  bpelx:insertMissingToData="yes">
+              <from variable="inputVariable" part="payload"
+                    query="/client:process/client:val2"/>
+              <to variable="outputVariable" part="payload"
+                  query="/client:processResponse/client:val2"/>
+            </copy>
+          </assign>
+        </catch>
+      </faultHandlers>
+      <assign name="InitialAssign">
+        <copy>
+          <from variable="inputVariable" part="payload"
+                query="/client:process/client:val2"/>
+          <to variable="outputVariable" part="payload"
+              query="/client:processResponse/client:val2"/>
+        </copy>
+      </assign>
+    </scope>
+    <scope name="Scope1">
+      <faultHandlers>
+        <catch faultName="bpws:selectionFailure">
+          <assign name="CorrectedAssignMissingElement">
+            <copy bpelx:insertMissingToData="yes">
+              <from variable="inputVariable" part="payload"
+                    query="/client:process/client:val1"/>
+              <to variable="outputVariable" part="payload"
+                  query="/client:processResponse/client:valX"/>
+            </copy>
+          </assign>
+        </catch>
+      </faultHandlers>
+      <assign name="AssignMissingElement">
+        <copy>
+          <from variable="inputVariable" part="payload"
+                query="/client:process/client:val1"/>
+          <to variable="outputVariable" part="payload"
+              query="/client:processResponse/client:valX"/>
+        </copy>
+      </assign>
+    </scope>
+    <reply name="replyOutput" partnerLink="MappingDemoService"
+           portType="client:MappingBPELProcess" operation="process"
+           variable="outputVariable"/>
+  </sequence>
+</process>

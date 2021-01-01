@@ -1,0 +1,15 @@
+<adapter-config name="DatabaseWriteService" adapter="Database Adapter" wsdlLocation="DatabaseWriteService.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/DB/Test" UIConnectionName="SOAVBOX_TEST" adapterRef=""/>
+  <endpoint-interaction portType="DatabaseWriteService_ptt" operation="insert">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="DatabaseWriteService.TestTable"/>
+      <property name="DmlType" value="insert"/>
+      <property name="OutputCompletedXml" value="true"/>
+      <property name="MappingsMetaDataURL" value="DatabaseWriteService-or-mappings.xml"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

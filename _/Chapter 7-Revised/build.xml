@@ -1,0 +1,58 @@
+<project name="CreditCardServiceMessages" default="dist" basedir=".">
+	<description>
+        Ant build file for the CreditCardServiceMessages project
+    </description>
+
+	<!-- set global properties for this build -->
+	<property name="src" location="src" />
+	<property name="gensrc" location="gensrc" />
+	<property name="build" location="build/classes" />
+	<property name="genbuild" location="genbuild/classes" />
+	<property name="dist" location="dist" />
+	<property name="lib" location="lib" />
+	<property name="schemadir" location="resources" />
+	<property name="version" value="1.0" />
+
+	<path id="project.class.path">
+		<fileset dir="${lib}" includes="*.jar" />
+		<fileset dir="${dist}" includes="*.jar" />
+	</path>
+
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${gensrc}" />
+		<mkdir dir="${build}" />
+		<mkdir dir="${genbuild}" />
+		<mkdir dir="${dist}" />
+	</target>
+
+	<taskdef name="xmlbean"
+		classname="org.apache.xmlbeans.impl.tool.XMLBean"
+		classpath="${lib}/com.bea.core.xml.xmlbeans_2.1.0.0_2-5-1.jar" />
+
+	<!-- Compile the config schema definition with XmlBeans -->
+	<target name="scomp" depends="init" description="compile the schema">
+		<xmlbean srcgendir="${gensrc}"
+			classgendir="${genbuild}"
+			destfile="${dist}/${ant.project.name}XmlBeans_${version}.jar"
+			failonerror="true" classpathref="project.class.path">
+			<fileset dir="${schemadir}" includes="wsdl/CreditCardService.xsd" />
+		</xmlbean>
+	</target>
+
+	<target name="compile" depends="init,scomp" description="compile the source ">
+		<javac srcdir="${src}" destdir="${build}" classpathref="project.class.path" />
+	</target>
+
+	<target name="dist" depends="compile" description="generate the JAR">
+		<mkdir dir="${dist}" />
+		<jar jarfile="${dist}/${ant.project.name}_${version}.jar" basedir="${build}" />
+	</target>
+
+	<target name="clean" description="clean up">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+		<delete dir="${genbuild}" />
+		<delete dir="${gensrc}" />
+	</target>
+</project>

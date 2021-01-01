@@ -1,0 +1,6 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<client:timing xmlns:client="http://xmlns.oracle.com/SOACookbookManagement/EchoClientComposite/EchoClientBPELProcess">
+   <client:startTime>2012-06-20T19:52:11.279</client:startTime>
+   <client:endTime>2012-06-20T19:52:12.679</client:endTime>
+   <client:elapsedTime>PT1.4S</client:elapsedTime>
+</client:timing>

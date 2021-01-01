@@ -1,0 +1,83 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Sep 09 19:16:34 EST 2012
+  Author:  matt.wright
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="PublisherSkynet"
+               targetNamespace="http://xmlns.oracle.com/PublisherApp/PublisherSkynet/PublisherSkynet"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/PublisherApp/PublisherSkynet/PublisherSkynet"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://rubiconred.com/ckbk/svc/PublisherService"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns2="http://rubiconred.com/ckbk/xsd/book"
+         xmlns:ns3="http://rubiconred.com/ckbk/svc/PublisherAsyncService">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="publisherskynet_client" partnerLinkType="ns1:PublisherSkynet" myRole="PublisherService"/>
+    <partnerLink name="PublisherAsyncService.publisherasyncservice_client"
+                 partnerLinkType="ns3:PublisherAsyncService"
+                 partnerRole="PublisherAsyncService"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:submitBookOrder"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="ns1:submitBookOrderResponse"/>
+    <variable name="submitBookOrder" messageType="ns3:submitBookOrder"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in PublisherSkynet.wsdl) -->
+    <receive name="receiveInput" partnerLink="publisherskynet_client" portType="ns1:PublisherService" operation="submitBookOrder" variable="inputVariable" createInstance="yes"/>
+    <assign name="setSubmitBookOrder">
+      <copy>
+        <from>$inputVariable.payload/ns1:publisher</from>
+        <to>$submitBookOrder.payload/ns3:publisher</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/ns2:bookOrder</from>
+        <to>$submitBookOrder.payload/ns2:bookOrder</to>
+      </copy>
+    </assign>
+    <invoke name="submitBookOrder"
+            partnerLink="PublisherAsyncService.publisherasyncservice_client"
+            portType="ns3:PublisherAsyncService" operation="submitBookOrder"
+            inputVariable="submitBookOrder" bpelx:invokeAsDetail="no"/>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="publisherskynet_client" portType="ns1:PublisherService" operation="submitBookOrder" variable="outputVariable"/>
+  </sequence>
+</process>

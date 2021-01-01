@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://rubiconred.com/ckbk/ebm/CreditCard" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rubiconred.com/ckbk/ebm/CreditCard" xmlns:acc="http://rubiconred.com/ckbk/xsd/account" xmlns:cmn="http://rubiconred.com/ckbk/xsd/common">
+            
+    <xsd:import namespace="http://rubiconred.com/ckbk/xsd/account" schemaLocation="../xsd/Account_v1_0.xsd"/>
+    <xsd:import namespace="http://rubiconred.com/ckbk/xsd/common" schemaLocation="../xsd/Common_v1_0.xsd"/>
+
+    <xsd:element name="verifyCreditCard" type="tVerifyCreditCard"/>
+    <xsd:element name="verifyCreditCardResponse" type="tVerifyCreditCardResponse"/>
+    <xsd:element name="debitCreditCard" type="tDebitCreditCard"/>
+    <xsd:element name="debitCreditCardResponse" type="tDebitCreditCardResponse"/>
+
+    <xsd:complexType name="tVerifyCreditCard">
+        <xsd:sequence>
+            <xsd:element ref="cmn:creditCard"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="tVerifyCreditCardResponse">
+        <xsd:sequence>
+            <xsd:element ref="cmn:cardNumber"/>
+            <xsd:element ref="cmn:cardAuthCode"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="tDebitCreditCard">
+        <xsd:sequence>
+            <xsd:element ref="acc:trnAmount"/>
+            <xsd:element ref="acc:trnDesc"/>
+            <xsd:element ref="cmn:creditCard"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="tDebitCreditCardResponse">
+        <xsd:sequence>
+            <xsd:element ref="cmn:cardNumber"/>
+            <xsd:element ref="cmn:cardAuthCode"/>
+        </xsd:sequence>
+    </xsd:complexType>            
+</xsd:schema>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="EchoClientApplication">
+      <service name="echoclientbpelprocess_client_ep">
+         <binding type="ws">
+            <attribute name="location">
+               <!-- Modify URL to refer to server front end URL -->
+               <searchReplace>
+                  <search>http://localhost:7601</search>
+                  <replace>http://soavbox.oracle.com:7601</replace>
+               </searchReplace>
+            </attribute>
+         </binding>
+      </service>
+      <reference name="EchoService">
+         <!--Add search and replace rules for the binding properties-->
+         <binding type="ws">
+            <attribute name="location">
+               <!-- Modify URL to refer to server front end URL -->
+               <searchReplace>
+                  <search>http://localhost:7601</search>
+                  <replace>http://soavbox.oracle.com:7601</replace>
+               </searchReplace>
+            </attribute>
+         </binding>
+      </reference>
+      <reference name="HTTPSecureEchoService">
+         <!--Add search and replace rules for the binding properties-->
+         <binding type="ws">
+            <attribute name="location">
+               <!-- Modify URL to refer to server front end URL -->
+               <searchReplace>
+                  <search>http://localhost:7601</search>
+                  <replace>http://soavbox.oracle.com:7601</replace>
+               </searchReplace>
+            </attribute>
+            <!-- Set apropriate credentials for BASIC authentication call -->
+            <property name="csf-key">
+               <replace>Role1</replace>
+            </property>
+         </binding>
+      </reference>
+      <reference name="WSSSecureEchoService">
+         <!--Add search and replace rules for the binding properties-->
+         <binding type="ws">
+            <attribute name="location">
+               <!-- Modify URL to refer to server front end URL -->
+               <searchReplace>
+                  <search>http://localhost:7601</search>
+                  <replace>http://soavbox.oracle.com:7601</replace>
+               </searchReplace>
+            </attribute>
+            <!-- Set apropriate credentials for WSS authentication call -->
+            <property name="csf-key">
+               <replace>Role1</replace>
+            </property>
+         </binding>
+      </reference>
+   </composite>
+</SOAConfigPlan>

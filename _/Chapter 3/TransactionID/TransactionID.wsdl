@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="TransactionID"
+     targetNamespace="http://transaction.cookbook.soa/"
+     xmlns:tns="http://transaction.cookbook.soa/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+     xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+     xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    >
+    <wsdl:types>
+        <xsd:schema xmlns:ns0="http://transaction.cookbook.soa/types" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             targetNamespace="http://transaction.cookbook.soa/types">
+            <xsd:complexType name="xiD">
+                <xsd:sequence>
+                    <xsd:element name="branchQualifier" type="xsd:base64Binary" minOccurs="0"/>
+                    <xsd:element name="formatId" type="xsd:int"/>
+                    <xsd:element name="globalTransactionId" type="xsd:base64Binary" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+        <xsd:schema targetNamespace="http://transaction.cookbook.soa/" xmlns:tns="http://transaction.cookbook.soa/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://transaction.cookbook.soa/types">
+            <xsd:import namespace="http://transaction.cookbook.soa/types"/>
+            <xsd:complexType name="getGlobalTransactionID">
+                <xsd:sequence/>
+            </xsd:complexType>
+            <xsd:element name="getGlobalTransactionID" type="tns:getGlobalTransactionID"/>
+            <xsd:complexType name="getGlobalTransactionIDResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getGlobalTransactionIDResponse" type="tns:getGlobalTransactionIDResponse"/>
+            <xsd:complexType name="getTransactionID">
+                <xsd:sequence/>
+            </xsd:complexType>
+            <xsd:element name="getTransactionID" type="tns:getTransactionID"/>
+            <xsd:complexType name="getTransactionIDResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="ns1:xiD"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getTransactionIDResponse" type="tns:getTransactionIDResponse"/>
+            <xsd:complexType name="getBranchQualifier">
+                <xsd:sequence/>
+            </xsd:complexType>
+            <xsd:element name="getBranchQualifier" type="tns:getBranchQualifier"/>
+            <xsd:complexType name="getBranchQualifierResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getBranchQualifierResponse" type="tns:getBranchQualifierResponse"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="getGlobalTransactionIDInput">
+        <wsdl:part name="parameters" element="tns:getGlobalTransactionID"/>
+    </wsdl:message>
+    <wsdl:message name="getGlobalTransactionIDOutput">
+        <wsdl:part name="parameters" element="tns:getGlobalTransactionIDResponse"/>
+    </wsdl:message>
+    <wsdl:message name="getTransactionIDInput">
+        <wsdl:part name="parameters" element="tns:getTransactionID"/>
+    </wsdl:message>
+    <wsdl:message name="getTransactionIDOutput">
+        <wsdl:part name="parameters" element="tns:getTransactionIDResponse"/>
+    </wsdl:message>
+    <wsdl:message name="getBranchQualifierInput">
+        <wsdl:part name="parameters" element="tns:getBranchQualifier"/>
+    </wsdl:message>
+    <wsdl:message name="getBranchQualifierOutput">
+        <wsdl:part name="parameters" element="tns:getBranchQualifierResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="TransactionID">
+        <wsdl:operation name="getGlobalTransactionID">
+            <wsdl:input message="tns:getGlobalTransactionIDInput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:output message="tns:getGlobalTransactionIDOutput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+        </wsdl:operation>
+        <wsdl:operation name="getTransactionID">
+            <wsdl:input message="tns:getTransactionIDInput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:output message="tns:getTransactionIDOutput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+        </wsdl:operation>
+        <wsdl:operation name="getBranchQualifier">
+            <wsdl:input message="tns:getBranchQualifierInput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:output message="tns:getBranchQualifierOutput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

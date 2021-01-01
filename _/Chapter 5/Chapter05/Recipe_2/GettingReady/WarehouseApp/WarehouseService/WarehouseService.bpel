@@ -1,0 +1,117 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Sep 09 11:55:31 EST 2012
+  Author:  matt.wright
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="WarehouseService"
+               targetNamespace="http://xmlns.oracle.com/WarehouseApp/WarehouseService/WarehouseService"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/WarehouseApp/WarehouseService/WarehouseService"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://rubiconred.com/ckbk/svc/WarehouseService"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns2="http://rubiconred.com/ckbk/xsd/book"
+         xmlns:ns3="http://xmlns.oracle.com/WarehouseApp/WarehouseService/WarehouseService/correlationset">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="warehouseservice_client" partnerLinkType="ns1:WarehouseService" myRole="WarehouseService"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:submitBookOrder"/>
+    <variable name="orderComplete" type="xsd:boolean"/>
+    <variable name="waitUntil" type="xsd:dateTime"/>
+    <variable name="nextBookOrder" messageType="ns1:submitBookOrder"/>
+  </variables>
+  <correlationSets>
+    <correlationSet name="isbnCS" properties="ns3:isbn"/>
+  </correlationSets>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in WarehouseService.wsdl) -->
+    <receive name="receiveInput" partnerLink="warehouseservice_client" portType="ns1:WarehouseService" operation="submitBookOrder" variable="inputVariable" createInstance="yes">
+      <correlations>
+        <correlation set="isbnCS" initiate="yes"/>
+      </correlations>
+    </receive>
+    <assign name="Initalise">
+      <copy>
+        <from>false()</from>
+        <to>$orderComplete</to>
+      </copy>
+      <copy>
+        <from>xp20:add-dayTimeDuration-to-dateTime(xp20:current-dateTime(), 'PT1H')</from>
+        <to>$waitUntil</to>
+      </copy>
+    </assign>
+    <while name="WhileMoreOrders">
+      <condition>$orderComplete = false()</condition>
+      <pick name="Pick1">
+        <onMessage variable="nextBookOrder"
+                   partnerLink="warehouseservice_client"
+                   portType="ns1:WarehouseService" operation="submitBookOrder">
+          <correlations>
+            <correlation set="isbnCS" initiate="no"/>
+          </correlations>
+          <assign name="IncrementOrder">
+            <copy>
+              <from>$nextBookOrder.payload/ns2:bookOrder/ns2:quantity + $inputVariable.payload/ns2:bookOrder/ns2:quantity</from>
+              <to>$inputVariable.payload/ns2:bookOrder/ns2:quantity</to>
+            </copy>
+          </assign>
+        </onMessage>
+        <onAlarm bpelx:name="Wait">
+          <until>$waitUntil</until>
+          <assign name="SetOrderComplete">
+            <copy>
+              <from>true()</from>
+              <to>$orderComplete</to>
+            </copy>
+          </assign>
+        </onAlarm>
+      </pick>
+    </while>
+  </sequence>
+</process>

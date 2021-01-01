@@ -1,0 +1,271 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema xmlns="http://rubiconred.com/ebo/util.sch.Job" xmlns:tns="http://rubiconred.com/ebo/util.sch.Job"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://rubiconred.com/ebo/util.sch.Job"
+     version="1.0">
+    <xsd:element name="job" type="JobType"/>
+    <xsd:element name="jobId" type="JobIdType"/>
+    <xsd:element name="jobGroup" type="JobGroupType"/>
+    <xsd:element name="jobSet" type="JobSetType"/>
+    <xsd:element name="jobDefinition" type="JobDefinitionType"/>
+    <xsd:element name="ednJobDefinition" type="EdnJobDefinitionType"/>
+    <xsd:element name="webServiceJobDefinition" type="WebServiceJobDefinitionType"/>
+    <xsd:element name="simpleSchedule" type="SimpleScheduleType"/>
+    <xsd:element name="cronSchedule" type="CronScheduleType"/>
+    <xsd:simpleType name="JobIdType">
+        <xsd:annotation>
+            <xsd:documentation>Unique identifier for a Job within a Job
+                Group</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="32"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="JobGroupType">
+        <xsd:annotation>
+            <xsd:documentation>Unique identifier for a Job Group. A
+                Group may     contain zero, one or more jobs.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="32"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="JobDescription">
+        <xsd:annotation>
+            <xsd:documentation>Human-readable description of the job</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="80"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="JobType">
+        <xsd:annotation>
+            <xsd:documentation>Defines the attributes of a Job.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="jobId" type="JobIdType"/>
+            <xsd:element name="jobGroup" type="JobGroupType"/>
+            <xsd:element name="jobDescription" nillable="true" type="JobDescription"/>
+            <xsd:element name="startDate" nillable="true" type="xsd:date"/>
+            <xsd:element name="endDate" nillable="true" type="xsd:date"/>
+            <xsd:element name="active" type="xsd:boolean"/>
+            <xsd:element name="jobDefinition" type="JobDefinitionType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="JobSetType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="job" type="JobType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="JobDefinitionType">
+        <xsd:annotation>
+            <xsd:documentation>Defines the details of when the job
+                should run and     how.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:choice>
+                <xsd:element ref="simpleSchedule"/>
+                <xsd:element ref="cronSchedule"/>
+            </xsd:choice>
+            <xsd:choice>
+                <xsd:element ref="ednJobDefinition"/>
+                <xsd:element ref="webServiceJobDefinition"/>
+            </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="jobClass" type="JobClassType" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="SimpleScheduleType">
+        <xsd:annotation>
+            <xsd:documentation>Defines a simple schedule for when a job
+                should     execute.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice>
+            <xsd:element ref="onceSimpleSchedule"/>
+            <xsd:element ref="secondIntervalSimpleSchedule"/>
+            <xsd:element ref="minuteIntervalSimpleSchedule"/>
+            <xsd:element ref="hourIntervalSimpleSchedule"/>
+            <xsd:element ref="dailySimpleSchedule"/>
+            <xsd:element ref="monthlySimpleSchedule"/>
+            <xsd:element ref="yearlySimpleSchedule"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:simpleType name="CronScheduleType">
+        <xsd:annotation>
+            <xsd:documentation>Defines a Cron-Expressions for when a job
+                should     execute.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="64"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="EdnJobDefinitionType">
+        <xsd:annotation>
+            <xsd:documentation>For use in the case of Jobs which enqueue
+                EDN     events.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="event" type="QualifiedNameType"/>
+            <xsd:element name="eventPayload" type="xsd:anyType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="WebServiceJobDefinitionType">
+        <xsd:annotation>
+            <xsd:documentation>For use in the case of Jobs which call
+                web     services.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="service" type="QualifiedNameType"/>
+            <xsd:element name="port" type="QualifiedNameType"/>
+            <xsd:element name="endpointAddress" type="xsd:anyURI"/>
+            <xsd:element name="soapRequestBody" type="xsd:anyType"/>
+        </xsd:sequence>
+        <xsd:attribute name="responseInterface" type="ResponseInterfaceType" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="QualifiedNameType">
+        <xsd:sequence>
+            <xsd:element name="URI" type="xsd:anyURI"/>
+            <xsd:element name="localName" type="xsd:NCName"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="JobClassType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="EDN"/>
+            <xsd:enumeration value="WebService"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="ResponseInterfaceType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="One-Way"/>
+            <xsd:enumeration value="Synchronous"/>
+            <xsd:enumeration value="Asynchronous"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="IntervalMultiplierType">
+        <xsd:restriction base="xsd:positiveInteger"/>
+    </xsd:simpleType>
+    <xsd:complexType name="TimeOfDayRangeType">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="fromTime" type="xsd:time"/>
+            <xsd:element minOccurs="0" name="toTime" type="xsd:time"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="DayOfWeekType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="SUNDAY"/>
+            <xsd:enumeration value="MONDAY"/>
+            <xsd:enumeration value="TUESDAY"/>
+            <xsd:enumeration value="WEDNESDAY"/>
+            <xsd:enumeration value="THURSDAY"/>
+            <xsd:enumeration value="FRIDAY"/>
+            <xsd:enumeration value="SATURDAY"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="ActiveDayOfWeekType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:boolean">
+                <xsd:attribute name="day" type="DayOfWeekType" use="required"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="ActiveDaysOfWeekType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="7" minOccurs="7" name="isDayActive" type="ActiveDayOfWeekType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="DayOfMonthType">
+        <xsd:restriction base="xsd:positiveInteger">
+            <xsd:maxInclusive value="31"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="MonthType">
+        <xsd:restriction base="xsd:positiveInteger">
+            <xsd:maxInclusive value="12"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="YearType">
+        <xsd:annotation>
+            <xsd:documentation>This range corresponds to the range
+                supported by     the Quartz scheduler</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:positiveInteger">
+            <xsd:minInclusive value="1970"/>
+            <xsd:maxExclusive value="2099"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="UseNearestWeekdayType">
+        <xsd:restriction base="xsd:boolean"/>
+    </xsd:simpleType>
+    <xsd:complexType name="SecondIntervalSimpleScheduleType">
+        <xsd:sequence>
+            <xsd:element ref="repeatEveryNSeconds"/>
+            <xsd:element ref="timeOfDayRange"/>
+            <xsd:element ref="activeDaysOfWeek"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="MinuteIntervalSimpleScheduleType">
+        <xsd:sequence>
+            <xsd:element ref="repeatEveryNMinutes"/>
+            <xsd:element ref="timeOfDayRange"/>
+            <xsd:element ref="activeDaysOfWeek"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="HourIntervalSimpleScheduleType">
+        <xsd:sequence>
+            <xsd:element ref="repeatEveryNHours"/>
+            <xsd:element ref="timeOfDayRange"/>
+            <xsd:element ref="activeDaysOfWeek"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="DailySimpleScheduleType">
+        <xsd:sequence>
+            <xsd:element ref="timeOfDay"/>
+            <xsd:element ref="activeDaysOfWeek"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="MonthlySimpleScheduleType">
+        <xsd:sequence>
+            <xsd:element ref="timeOfDay"/>
+            <xsd:element ref="dayOfMonth"/>
+            <xsd:element ref="useNearestWeekday"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="YearlySimpleScheduleType">
+        <xsd:sequence>
+            <xsd:element ref="timeOfDay"/>
+            <xsd:element ref="dayOfMonth"/>
+            <xsd:element ref="month"/>
+            <xsd:element ref="useNearestWeekday"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="OnceSimpleScheduleType">
+        <xsd:sequence>
+            <xsd:element ref="timeOfDay"/>
+            <xsd:element ref="dayOfMonth"/>
+            <xsd:element ref="month"/>
+            <xsd:element ref="year"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="activeDaysOfWeek" type="ActiveDaysOfWeekType">
+        <xsd:unique name="UniqueDay">
+            <xsd:selector xpath="tns:isDayActive"/>
+            <xsd:field xpath="@day"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="intervalMultiplier" type="IntervalMultiplierType"/>
+    <xsd:element name="timeOfDayRange" type="TimeOfDayRangeType"/>
+    <xsd:element name="timeOfDay" type="xsd:time"/>
+    <xsd:element name="dayOfMonth" type="DayOfMonthType"/>
+    <xsd:element name="month" type="MonthType"/>
+    <xsd:element name="year" type="YearType"/>
+    <xsd:element name="useNearestWeekday" type="UseNearestWeekdayType"/>
+    <xsd:element name="repeatEveryNSeconds" type="IntervalMultiplierType"/>
+    <xsd:element name="repeatEveryNMinutes" type="IntervalMultiplierType"/>
+    <xsd:element name="repeatEveryNHours" type="IntervalMultiplierType"/>
+    <xsd:element name="secondIntervalSimpleSchedule" type="SecondIntervalSimpleScheduleType"/>
+    <xsd:element name="minuteIntervalSimpleSchedule" type="MinuteIntervalSimpleScheduleType"/>
+    <xsd:element name="hourIntervalSimpleSchedule" type="HourIntervalSimpleScheduleType"/>
+    <xsd:element name="dailySimpleSchedule" type="DailySimpleScheduleType"/>
+    <xsd:element name="monthlySimpleSchedule" type="MonthlySimpleScheduleType"/>
+    <xsd:element name="yearlySimpleSchedule" type="YearlySimpleScheduleType"/>
+    <xsd:element name="onceSimpleSchedule" type="OnceSimpleScheduleType"/>
+</xsd:schema>
+<!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Oracle JAX-WS 2.1.5. -->

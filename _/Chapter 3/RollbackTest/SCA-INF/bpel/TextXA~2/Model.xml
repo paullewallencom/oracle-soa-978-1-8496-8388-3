@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="TextXABPELProcess" targetNamespace="http://xmlns.oracle.com/SOACookbookTransaction/RollbackTest/TextXABPELProcess" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/SOACookbookTransaction/RollbackTest/TextXABPELProcess" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:ns1="http://xmlns.oracle.com/SOACookbookTransaction/RollbackTest/RollbackBPELProcess" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:blog="http://www.oracle.com/XSL/Transform/java/antony.blog.XPathImpl" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:stat="http://www.oracle.com/XSL/Transform/java/soa.cookbook.xpath.StdDev" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" id="BpPrc0">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="textxabpelprocess_client" partnerLinkType="ns1:RollbackBPELProcess" myRole="RollbackBPELProcessProvider"/>
+    <partnerLink name="XARollbackBPELProcess.rollbackbpelprocess_client" partnerLinkType="ns1:RollbackBPELProcess" partnerRole="RollbackBPELProcessProvider"/>
+    <partnerLink name="RollbackBPELProcess.rollbackbpelprocess_client" partnerLinkType="ns1:RollbackBPELProcess" partnerRole="RollbackBPELProcessProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:RollbackBPELProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="ns1:RollbackBPELProcessResponseMessage"/>
+    <variable name="Invoke_process_InputVariable" messageType="ns1:RollbackBPELProcessRequestMessage"/>
+    <variable name="Invoke_process_OutputVariable" messageType="ns1:RollbackBPELProcessResponseMessage"/>
+  </variables>
+  <faultHandlers id="BpFhs0">
+    <catch faultName="bpelx:remoteFault" id="BpCFt0">
+      <sequence id="BpSeq0">
+        <assign name="AssignResult" id="BpAss0">
+          <copy>
+            <from expression="&quot;Caught Remote Fault&quot;"/>
+            <to variable="outputVariable" part="payload" query="/ns1:processResponse/ns1:result"/>
+          </copy>
+        </assign>
+        <reply name="ReplyInFault" variable="outputVariable" partnerLink="textxabpelprocess_client" portType="ns1:RollbackBPELProcess" operation="process" id="BpRpl0"/>
+      </sequence>
+    </catch>
+    <catchAll id="BpCAl0">
+      <sequence id="BpSeq1">
+        <assign name="AssignResult" id="BpAss1">
+          <copy>
+            <from expression="&quot;Caught Fault&quot;"/>
+            <to variable="outputVariable" part="payload" query="/ns1:processResponse/ns1:result"/>
+          </copy>
+        </assign>
+        <reply name="ReplyInFault" variable="outputVariable" partnerLink="textxabpelprocess_client" portType="ns1:RollbackBPELProcess" operation="process" id="BpRpl1"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq2">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in TextXABPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="textxabpelprocess_client" portType="ns1:RollbackBPELProcess" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+
+    <!-- Generate reply to synchronous request -->
+    <assign name="AssignCalls" id="BpAss2">
+      <copy>
+        <from expression="false()"/>
+        <to variable="Invoke_process_InputVariable" part="payload" query="/ns1:process/ns1:rollback"/>
+      </copy>
+      <copy>
+        <from expression="concat(&quot;1:&quot;,bpws:getVariableData('inputVariable','payload','/ns1:process/ns1:remark'))"/>
+        <to variable="Invoke_process_InputVariable" part="payload" query="/ns1:process/ns1:remark"/>
+      </copy>
+    </assign>
+    <switch name="FirstSwitch" id="BpSwt0">
+      <case condition="bpws:getVariableData('inputVariable','payload','/ns1:process/ns1:xa')=string(true())">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">XA</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <invoke name="InvokeXAfirst" inputVariable="Invoke_process_InputVariable" outputVariable="Invoke_process_OutputVariable" partnerLink="XARollbackBPELProcess.rollbackbpelprocess_client" portType="ns1:RollbackBPELProcess" operation="process" bpelx:invokeAsDetail="no" id="BpInv0"/>
+      </case>
+      <otherwise>
+        <invoke name="InvokeNonXAFirst" inputVariable="Invoke_process_InputVariable" outputVariable="Invoke_process_OutputVariable" partnerLink="RollbackBPELProcess.rollbackbpelprocess_client" portType="ns1:RollbackBPELProcess" operation="process" bpelx:invokeAsDetail="no" id="BpInv1"/>
+      </otherwise>
+    </switch>
+    <assign name="AssignSecondCalls" id="BpAss3">
+      <copy>
+        <from expression="concat(&quot;2:&quot;,bpws:getVariableData('inputVariable','payload','/ns1:process/ns1:remark'))"/>
+        <to variable="Invoke_process_InputVariable" part="payload" query="/ns1:process/ns1:remark"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="payload" query="/ns1:process/ns1:rollback"/>
+        <to variable="Invoke_process_InputVariable" part="payload" query="/ns1:process/ns1:rollback"/>
+      </copy>
+    </assign>
+    <switch name="SecondSwitch" id="BpSwt1">
+      <case condition="bpws:getVariableData('inputVariable','payload','/ns1:process/ns1:xa')=string(true())">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">XA</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <invoke name="InvokeXASecond" inputVariable="Invoke_process_InputVariable" outputVariable="Invoke_process_OutputVariable" partnerLink="XARollbackBPELProcess.rollbackbpelprocess_client" portType="ns1:RollbackBPELProcess" operation="process" bpelx:invokeAsDetail="no" id="BpInv2"/>
+      </case>
+      <otherwise>
+        <invoke name="InvokeNonXASecond" inputVariable="Invoke_process_InputVariable" outputVariable="Invoke_process_OutputVariable" partnerLink="RollbackBPELProcess.rollbackbpelprocess_client" portType="ns1:RollbackBPELProcess" operation="process" bpelx:invokeAsDetail="no" id="BpInv3"/>
+      </otherwise>
+    </switch>
+    <assign name="AssignResult" id="BpAss4">
+      <copy>
+        <from expression="&quot;Successfull Result&quot;"/>
+        <to variable="outputVariable" part="payload" query="/ns1:processResponse/ns1:result"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="textxabpelprocess_client" portType="ns1:RollbackBPELProcess" operation="process" variable="outputVariable" id="BpRpl2"/>
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jan 10 14:42:45 MST 2012
+  Author:  axreynol
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

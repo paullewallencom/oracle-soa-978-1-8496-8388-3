@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soa-xpath-functions xmlns="http://xmlns.oracle.com/soa/config/xpath"
+                     xmlns:stat="http://www.oracle.com/XSL/Transform/java/soa.cookbook.xpath.StdDev">
+  <function name="stat:getStdDev">
+    <className>soa.cookbook.xpath.StdDev</className>
+    <return type="number"/>
+    <params>
+      <param name="data" type="node-set"/>
+    </params>
+    <desc>Returns the Standard Deviation of the values of the input node-set</desc>
+    <detail>Returns the Standard Deviation of the values of the top level
+            elements in the node-set passed as a parameter.</detail>
+  </function>
+</soa-xpath-functions>

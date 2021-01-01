@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="ParcelTrackerService"
+     targetNamespace="http://rubiconred.com/ckbk/svc/ParcelTrackerService"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+     xmlns:tns="http://rubiconred.com/ckbk/svc/ParcelTrackerService"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    >
+    <wsdl:documentation>
+        <abstractWSDL>http://soabpm-vm:7001/soa-infra/services/default/ParcelTracker!1.0/ParcelTrackerService_1.0Wrapper.wsdl</abstractWSDL>
+    </wsdl:documentation>
+    <plnk:partnerLinkType name="ParcelTrackerService">
+        <plnk:role name="ParcelTrackerService" portType="tns:ParcelTrackerService"/>
+    </plnk:partnerLinkType>
+    <wsdl:import namespace="http://rubiconred.com/ckbk/svc/ParcelTrackerService" location="http://soabpm-vm:7001/soa-infra/services/default/ParcelTracker/parceltrackerservice_client?WSDL=ParcelTrackerService_1.0.wsdl"/>
+    <wsdl:service name="parceltrackerservice_client">
+        <wsdl:port name="ParcelTrackerService_pt" binding="tns:ParcelTrackerServiceBinding">
+            <soap:address location="http://soabpm-vm:7001/soa-infra/services/default/ParcelTracker/parceltrackerservice_client"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

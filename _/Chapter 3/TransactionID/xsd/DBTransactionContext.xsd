@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/DBTransactionContext" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/DBTransactionContext" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="DBTransactionContextInput" type="DBTransactionContextInput"/>
+   <xs:complexType name="DBTransactionContextInput">
+      <xs:sequence/>
+   </xs:complexType>
+   <xs:element name="DBTransactionContextOutputCollection" type="DBTransactionContextOutputCollection"/>
+   <xs:complexType name="DBTransactionContextOutputCollection">
+      <xs:sequence>
+         <xs:element name="DBTransactionContextOutput" type="DBTransactionContextOutput" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="DBTransactionContextOutput">
+      <xs:sequence>
+         <xs:element name="LOCAL_TRANSACTION_ID" type="xs:string" nillable="true"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

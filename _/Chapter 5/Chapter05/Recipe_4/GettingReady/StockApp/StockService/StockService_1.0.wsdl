@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="StockService"
+     targetNamespace="http://rubiconred.com/ckbk/svc/StockService"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://rubiconred.com/ckbk/svc/StockService"
+     xmlns:flt="http://rubiconred.com/ckbk/xsd/fault"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    >
+    <wsdl:documentation>Version 1.0</wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://rubiconred.com/ckbk/svc/StockService" schemaLocation="StockService_1.0.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="checkInventory">
+        <wsdl:part name="payload" element="tns:checkInventory"/>
+    </wsdl:message>
+    <wsdl:portType name="StockService">
+        <wsdl:operation name="checkInventory">
+            <wsdl:input message="tns:checkInventory"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="StockServiceBinding" type="tns:StockService">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="checkInventory">
+            <soap:operation style="document" soapAction="checkInventory"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+</wsdl:definitions>

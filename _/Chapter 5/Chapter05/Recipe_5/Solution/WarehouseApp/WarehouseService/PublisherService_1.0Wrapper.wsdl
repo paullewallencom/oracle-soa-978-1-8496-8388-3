@@ -1,0 +1,17 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="PublisherService"
+     targetNamespace="http://rubiconred.com/ckbk/svc/PublisherService"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://rubiconred.com/ckbk/svc/PublisherService"
+     xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <plnk:partnerLinkType name="PublisherService">
+        <plnk:role name="PublisherService">
+            <plnk:portType name="tns:PublisherService"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+    <wsdl:import namespace="http://rubiconred.com/ckbk/svc/PublisherService" location="PublisherService_1.0.wsdl"/>
+</wsdl:definitions>

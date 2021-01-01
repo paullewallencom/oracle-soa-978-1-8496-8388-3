@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<graphics>
+   <diagram optimizeLayout="false" popupEditor="false" fixedWidthSwimlanes="true" roundedPartnerlinks="true" centerZoom="true" validateOnLoad="true" confirmBeforeDelete="true" selectedPartnerLinkColor="0,0,153" swimlaneBackground="240,240,240" swimlaneDividerBackground="218,218,218" graphBackground="255,255,255" selectedBorderBackground="49,105,198" connectedPartnerLinkColor="204,204,255" connectablePartnerLinkColor="0,0,255" unconnectedPartnerLinkColor="192,192,192"/>
+   <annotationfile/>
+   <iconize empty="no" onAlarm="no" compensationHandler="no" switch="no" receive="no" onMessage="no" usertask="no" terminate="no" wait="no" phase="no" throw="no" signal="no" validate="no" pick="no" milestone="no" email="no" dehydrate="no" exec="no" im="no" createEntity="no" receiveSignal="no" while="no" otherwise="no" assert="no" invoke="no" scope="no" compensate="no" replay="no" voice="no" usernotification="no" reply="no" removeEntity="no" bindEntity="no" case="no" catchall="no" assign="no" checkpoint="no" catch="no" flow="no" sms="no" sequence="no" flowN="no" transformation="no" rule="no"/>
+   <partnerlink_locations>
+      <partnerlink name="echoclientbpelprocess_client" x="1" y="280" side="left"/>
+      <partnerlink name="EchoService" x="414" y="189" side="right"/>
+      <partnerlink name="HTTPSecureEchoService" x="414" y="283" side="right"/>
+      <partnerlink name="WSSSecureEchoService" x="414" y="377" side="right"/>
+   </partnerlink_locations>
+   <graph_layout viewport="0,0,546,454" show_swimlanes="true">
+      <layout_item collapsed="false" xpath="/process" type="process" showhandlers="true"/>
+      <layout_item collapsed="false" xpath="/process/sequence" type="sequence"/>
+   </graph_layout>
+   <bookmarks/>
+</graphics>

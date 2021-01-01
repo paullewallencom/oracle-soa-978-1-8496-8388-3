@@ -1,0 +1,91 @@
+<xsd:schema targetNamespace="http://rubiconred.com/ckbk/xsd/order" elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rubiconred.com/ckbk/xsd/order"
+	xmlns:cmn="http://rubiconred.com/ckbk/xsd/common"
+	xmlns:bse="http://rubiconred.com/ckbk/xsd/base">
+
+	<xsd:import namespace="http://rubiconred.com/ckbk/xsd/base" schemaLocation="Base_1.0.xsd"/>
+	<xsd:import namespace="http://rubiconred.com/ckbk/xsd/common" schemaLocation="Common_1.0.xsd"/>
+
+	<xsd:element name="itemId" type="ItemId"/>
+	<xsd:element name="sellerId" type="bse:Identifier"/>
+	<xsd:element name="buyerId" type="bse:Identifier"/>
+	<xsd:element name="order" type="Order"/>
+	<xsd:element name="orderDetail" type="OrderDetail"/>
+	<xsd:element name="orderSummary" type="OrderSummary"/>
+	<xsd:element name="orderDesc" type="xsd:string"/>
+	<xsd:element name="orderNo" type="OrderNo"/>
+	<xsd:element name="shipTo" type="ShipTo"/>
+	<xsd:element name="quantity" type="xsd:int"/>
+	<xsd:element name="orderDate" type="xsd:dateTime"/>
+	<xsd:element name="saleDate" type="xsd:dateTime"/>
+	<xsd:element name="lastUpdateDate" type="xsd:dateTime"/>
+	<xsd:element name="orderStatus" type="bse:Status"/>
+	<xsd:element name="itemPrice" type="bse:Amount"/>
+	<xsd:element name="subTotal" type="bse:Amount"/>
+	<xsd:element name="shippingPrice" type="bse:Amount"/>
+	<xsd:element name="totalPrice" type="bse:Amount"/>
+	<xsd:element name="nextAction" type="xsd:string"/>
+
+	<xsd:complexType name="Order">
+		<xsd:sequence>
+			<xsd:element ref="orderNo"/>
+			<xsd:element ref="orderDesc"/>
+			<xsd:element ref="itemId"/>
+			<xsd:element ref="sellerId"/>
+			<xsd:element ref="buyerId"/>
+			<xsd:element ref="orderDetail"/>
+			<xsd:element ref="shipTo"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OrderSummary">
+		<xsd:sequence>
+			<xsd:element ref="orderNo"/>
+			<xsd:element ref="orderDesc"/>
+			<xsd:element ref="itemId"/>
+			<xsd:element ref="sellerId"/>
+			<xsd:element ref="buyerId"/>
+			<xsd:element ref="itemPrice"/>
+			<xsd:element ref="totalPrice"/>
+			<xsd:element ref="orderDate"/>
+			<xsd:element ref="orderStatus"/>
+			<xsd:element ref="lastUpdateDate"/>
+			<xsd:element ref="nextAction"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OrderDetail">
+		<xsd:sequence>
+			<xsd:element ref="orderDate"/>
+			<xsd:element ref="orderStatus"/>
+			<xsd:element ref="quantity"/>
+			<xsd:element ref="itemPrice"/>
+			<xsd:element ref="subTotal"/>
+			<xsd:element ref="shippingPrice"/>
+			<xsd:element ref="totalPrice"/>
+			<xsd:element ref="lastUpdateDate"/>
+			<xsd:element ref="nextAction"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ShipTo">
+		<xsd:sequence>
+			<xsd:element name="shippingName" type="xsd:string"/>
+			<xsd:element name="shippingAddress" type="cmn:Address"/>
+			<xsd:element name="additionalInstructions" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:simpleType name="OrderNo">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="20"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="ItemId">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="20"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+</xsd:schema>

@@ -1,0 +1,60 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<References xmlns="http://xmlns.oracle.com/adf/jndi">
+   <Reference name="SOAVBOX_TEST" className="oracle.jdeveloper.db.adapter.DatabaseProvider" credentialStoreKey="SOAVBOX_TEST" xmlns="">
+      <Factory className="oracle.jdeveloper.db.adapter.DatabaseProviderFactory"/>
+      <RefAddresses>
+         <StringRefAddr addrType="sid">
+            <Contents>VBOX</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="subtype">
+            <Contents>oraJDBC</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="user">
+            <Contents>test</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="hostname">
+            <Contents>soavbox.oracle.com</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="port">
+            <Contents>1526</Contents>
+         </StringRefAddr>
+         <SecureRefAddr addrType="password"/>
+         <StringRefAddr addrType="DeployPassword">
+            <Contents>true</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="oraDriverType">
+            <Contents>thin</Contents>
+         </StringRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="SoaVbox_Sys" className="oracle.jdeveloper.db.adapter.DatabaseProvider" credentialStoreKey="SoaVbox_Sys" xmlns="">
+      <Factory className="oracle.jdeveloper.db.adapter.DatabaseProviderFactory"/>
+      <RefAddresses>
+         <StringRefAddr addrType="sid">
+            <Contents>vbox</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="oraDriverType">
+            <Contents>thin</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="port">
+            <Contents>1526</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="DeployPassword">
+            <Contents>true</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="user">
+            <Contents>sys</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="role">
+            <Contents>SYSDBA</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="subtype">
+            <Contents>oraJDBC</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="hostname">
+            <Contents>soavbox.oracle.com</Contents>
+         </StringRefAddr>
+         <SecureRefAddr addrType="password"/>
+      </RefAddresses>
+   </Reference>
+</References>

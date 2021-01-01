@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:map="http://cookbook.soa.mapping/types"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://cookbook.soa.mapping/types"
+            elementFormDefault="qualified">
+    <xsd:simpleType name="providerType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="EJB"/>
+            <xsd:enumeration value="Spring"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="quoteRequest" type="map:quoteRequestType"/>
+    <xsd:element name="quoteResponse" type="map:quoteResponseType"/>
+    <xsd:complexType name="quoteRequestType">
+        <xsd:sequence>
+            <xsd:element name="products"
+                         type="map:productListType"/>
+            <xsd:element name="requiredDate" type="xsd:dateTime" minOccurs="0"/>
+            <xsd:element name="provider" type="map:providerType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="quoteResponseType">
+        <xsd:sequence>
+            <xsd:element name="quote" minOccurs="0" maxOccurs="unbounded"
+                         type="map:quoteType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="productListType">
+        <xsd:sequence>
+            <xsd:element name="product" minOccurs="0" maxOccurs="unbounded"
+                         type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="quoteType">
+        <xsd:sequence>
+            <xsd:element name="product" type="xsd:string"/>
+            <xsd:element name="vendorQuotes" type="map:vendorQuoteList"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="vendorQuoteType" abstract="true">
+        <xsd:sequence>
+            <xsd:element name="price" type="xsd:decimal"/>
+            <xsd:element name="vendor" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="vendorQuoteList">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="hardwareQuote"
+                         type="map:hardwareVendorQuoteType"/>
+            <xsd:element name="serviceQuote" type="map:serviceVendorQuoteType"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name="hardwareVendorQuoteType">
+        <xsd:complexContent>
+            <xsd:extension base="map:vendorQuoteType">
+                <xsd:sequence>
+                    <xsd:element name="hardwareItemList">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="hardwareItem"
+                                             maxOccurs="unbounded"
+                                             minOccurs="0"
+                                             type="map:hardwareItemType"/>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="hardwareItemType">
+        <xsd:sequence>
+            <xsd:element name="item" type="xsd:string"/>
+            <xsd:element name="airTransportable" type="xsd:boolean"/>
+            <xsd:element name="price" type="xsd:decimal"/>
+            <xsd:element name="quantity" type="xsd:int"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="serviceVendorQuoteType">
+        <xsd:complexContent>
+            <xsd:extension base="map:vendorQuoteType">
+                <xsd:sequence>
+                    <xsd:element name="serviceItemList">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="serviceItem"
+                                             maxOccurs="unbounded"
+                                             minOccurs="0"
+                                             type="map:serviceItemType"/>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="serviceItemType">
+        <xsd:sequence>
+            <xsd:element name="service" type="xsd:string"/>
+            <xsd:element name="details" type="xsd:string"/>
+            <xsd:element name="price" type="xsd:decimal"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

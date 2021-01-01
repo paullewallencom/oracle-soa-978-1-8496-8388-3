@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+  <ser:coreEntry isProxy="true" isEnabled="true">
+    <ser:binding type="abstract XML"/>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/GzipFileAdapter/WriteGZipFile</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>false</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router>
+    <con:flow>
+      <con:route-node name="RouteNode1">
+        <con:context/>
+        <con:actions>
+          <con1:route>
+            <con2:id>_ActionId-4055960772692324891--1507e5ff.13ac89a9bbf.-7f56</con2:id>
+            <con1:service ref="GzipFileAdapter/GzipFileWriter" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con1:outboundTransform>
+              <con3:javaCallout varName="gzContent">
+                <con2:id>_ActionId-4055960772692324891--1507e5ff.13ac89a9bbf.-7f00</con2:id>
+                <con3:archive ref="GzipFileAdapter/jars/GzipAdapter"/>
+                <con3:className>com.rubiconred.osb.gzip.GzipAdapter</con3:className>
+                <con3:method>public static [B writeGzipObject(org.apache.xmlbeans.XmlObject)</con3:method>
+                <con3:expr>
+                  <con2:xqueryText>$body</con2:xqueryText>
+                </con3:expr>
+              </con3:javaCallout>
+              <con3:replace varName="body" contents-only="true">
+                <con2:id>_ActionId-4055960772692324891--1507e5ff.13ac89a9bbf.-7edc</con2:id>
+                <con3:location>
+                  <con2:xpathText>.</con2:xpathText>
+                </con3:location>
+                <con3:expr>
+                  <con2:xqueryText>$gzContent</con2:xqueryText>
+                </con3:expr>
+              </con3:replace>
+              <con3:transport-headers>
+                <con2:id>_ActionId-4055960772692324891--1507e5ff.13ac89a9bbf.-7f19</con2:id>
+                <con3:header-set>outbound-request</con3:header-set>
+                <con3:header name="fileName" value="expression">
+                  <con2:xqueryText>'Sample'</con2:xqueryText>
+                </con3:header>
+              </con3:transport-headers>
+            </con1:outboundTransform>
+            <con1:responseTransform/>
+          </con1:route>
+        </con:actions>
+      </con:route-node>
+    </con:flow>
+  </ser:router>
+</xml-fragment>

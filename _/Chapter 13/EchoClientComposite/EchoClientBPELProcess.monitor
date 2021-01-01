@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MonitorModel id="1" xmlns="http://www.oracle.com/bpel/v2/monitor">
+    <MonitorObjects id="2">
+        <ComponentPath name="ComponentPath_1" enabled="true" id="3"/>
+        <Indicators id="4"/>
+        <Paths id="5">
+            <Path id="14" name="WSInvokeInterval" enabled="true">
+                <StartActivity id="15" activityName="InvokeWSEchoService">
+                    <EvaluationEvent>activate</EvaluationEvent>
+                </StartActivity>
+                <EndActivity id="16" activityName="InvokeWSEchoService">
+                    <EvaluationEvent>complete</EvaluationEvent>
+                </EndActivity>
+            </Path>
+            <Path id="20" name="DirectInvokeInterval" enabled="true">
+                <StartActivity id="21" activityName="InvokeDirectEchoService">
+                    <EvaluationEvent>activate</EvaluationEvent>
+                </StartActivity>
+                <EndActivity id="22" activityName="InvokeDirectEchoService">
+                    <EvaluationEvent>complete</EvaluationEvent>
+                </EndActivity>
+            </Path>
+        </Paths>
+        <ActivityPath id="10" enabled="true" mode="scope"/>
+        <Counters id="6"/>
+    </MonitorObjects>
+    <Config id="7">
+        <FeatureSwitches enabled="true" id="8"></FeatureSwitches>
+        <DataBases id="9"></DataBases>
+    </Config>
+</MonitorModel>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Request xmlns="http://soa.cookbook.xpath">
+   <Data>0.73</Data>
+   <Data>5.73</Data>
+   <Data>10.73</Data>
+   <Data>15.73</Data>
+   <Data>20.73</Data>
+   <Data>25.73</Data>
+   <Data>30.73</Data>
+   <Data>35.73</Data>
+   <Data>40.73</Data>
+</Request>
